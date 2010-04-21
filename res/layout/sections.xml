@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+<TextView
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="fill_parent"
+android:layout_height="wrap_content"
+android:gravity="center"
+android:text="Last drink"
+style="?android:attr/listSeparatorTextViewStyle" />
+<ListView 
+	android:id="@+id/lastList" 
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	>
+</ListView>
+<TextView
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="fill_parent"
+android:layout_height="wrap_content"
+android:gravity="center"
+android:text="Favorites"
+style="?android:attr/listSeparatorTextViewStyle" />
+<ListView 
+	android:id="@+id/favouriteList" 
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	>
+</ListView>
+<TextView
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="fill_parent"
+android:layout_height="wrap_content"
+android:gravity="center"
+android:text="All drinks"
+style="?android:attr/listSeparatorTextViewStyle" />
+<ListView 
+	android:id="@+id/allList" 
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	>
+</ListView>
+</LinearLayout>
