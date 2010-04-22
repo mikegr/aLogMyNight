@@ -7,24 +7,35 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
-public class LogMyNight extends ListActivity
+public class LogMyNight extends Activity
 {
 	
-	String[] items = new String[] {"beer", "wine", "cocktail"};
+	String[] lastItems = new String[] {"Beer"};
+	String[] favItems = new String[] {"Beer", "Wine"};
+	String[] allItems = new String[] {"Beer", "Wine", "Cocktail", "Prosecco", "Water"};
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        setListAdapter(new GradientAdapter(this));
+        setContentView(R.layout.sections);
+        
+        ListView allList = (ListView) findViewById(R.id.allList);
+        allList.setAdapter(new GradientAdapter(this, allItems));
+        ListView favourites = (ListView) findViewById(R.id.favouriteList);
+        favourites.setAdapter(new GradientAdapter(this,favItems));
+        ListView lastItem = (ListView) findViewById(R.id.lastList);
+        lastItem.setAdapter(new GradientAdapter(this, lastItems));
+        
+        //setListAdapter(new GradientAdapter(this));
     }
     
     class GradientAdapter extends ArrayAdapter {
-    	public GradientAdapter(Context ctx) {
+    	public GradientAdapter(Context ctx, String[] items) {
 			super(ctx, R.layout.row, R.id.rowText, items);
 		}
     	
