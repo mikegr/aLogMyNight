@@ -32,7 +32,7 @@ public class LogMyNight extends ListActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        List<Adapter> adapters = new ArrayList<Adapter>();
+        List<GradientAdapter> adapters = new ArrayList<GradientAdapter>();
         adapters.add(new GradientAdapter(this, "Last", lastItems));
         adapters.add(new GradientAdapter(this, "Favourites", favItems));
         adapters.add(new GradientAdapter(this, "All drinks", allItems));
@@ -44,9 +44,10 @@ public class LogMyNight extends ListActivity
     
     class SectionAdapter extends BaseAdapter {
     	
-    	private List<Adapter> adapters;
+    	private List<GradientAdapter> adapters;
     	
-    	public SectionAdapter(List<Adapter> adapters) {
+    	
+    	public SectionAdapter(List<GradientAdapter> adapters) {
     		this.adapters = adapters;
     	}
     	
@@ -81,11 +82,11 @@ public class LogMyNight extends ListActivity
     	public View getView(int position, View convertView, ViewGroup parent) {
     		Log.d(TAG, "Requested view position:" + position);
     		int counter = 0;
-    		for(Adapter adapter:adapters) {
+    		for(GradientAdapter adapter:adapters) {
     			if (position == counter) { //header
     				View view = getLayoutInflater().inflate(R.layout.sectionheader, parent, false);
     				TextView text = (TextView) view.findViewById(R.id.sectionHeader);
-    				text.setText("Some Header");
+    				text.setText(adapter.getHeader());
     				return view;
     			}
     			int size = adapter.getCount();
@@ -113,6 +114,7 @@ public class LogMyNight extends ListActivity
     	private String header;
     	public GradientAdapter(Context ctx, String header, String[] items) {
 			super(ctx, R.layout.row, R.id.rowText, items);
+			this.header = header;
 		}
     	
     	@Override
@@ -124,6 +126,10 @@ public class LogMyNight extends ListActivity
     		
     		return view;
     	}
+    	
+    	public String getHeader() {
+			return header;
+		}
     	
     }
     
