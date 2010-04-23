@@ -1,1 +1,98 @@
-<LinearLayout android:id="@+id/LinearLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"></LinearLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/TableLayout01" 
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent" 
+	>
+<ImageView 
+	android:id="@+id/drinkImageView"
+	android:src="@drawable/beer" 
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+	
+	android:scaleType="fitXY"
+	
+	android:layout_above="@+id/linearLayout"
+	>
+	<!-- 
+	android:layout_weight="1"
+	android:scaleType="centerInside"  -->
+</ImageView>
+<LinearLayout
+	android:id="@+id/linearLayout"
+	android:layout_above="@+id/priceSeekBar"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:gravity="center_horizontal"
+	>
+	<LinearLayout 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_vertical"
+	>
+	<TextView 
+		android:text="Price:" 
+		android:id="@+id/priceTextVie" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		>
+	</TextView>
+	<EditText 
+		android:text="@+id/EditText01" 
+		android:id="@+id/priceEditText" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content">
+	</EditText>
+	<TextView 
+		android:text="€x" 
+		android:id="@+id/countTextView" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content">
+	</TextView>
+	<EditText 
+		android:text="1" 
+		android:id="@+id/countEditText" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content">
+	</EditText>
+	</LinearLayout>
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		>
+		<Button
+			android:id="@+id/upButton" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:text="Up"
+		>
+		</Button>
+		<Button
+			android:id="@+id/downButton"
+			android:text="Down" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content">
+		</Button>
+	</LinearLayout>
+</LinearLayout>
+
+
+<SeekBar 
+	android:id="@+id/priceSeekBar" 
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content"
+	android:layout_above="@+id/logButton"
+	android:paddingLeft="10px" 
+	>
+</SeekBar>
+<Button 
+	android:id="@+id/logButton"
+	android:text="Log my drink!"  
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content"
+	android:gravity="center_vertical"
+	android:layout_alignParentBottom="true"
+	android:layout_centerHorizontal="true"
+	>
+</Button>
+</RelativeLayout>
