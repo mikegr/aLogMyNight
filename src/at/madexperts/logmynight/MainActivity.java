@@ -1,10 +1,7 @@
 package at.madexperts.logmynight;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.database.Cursor;
@@ -14,9 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -65,12 +60,31 @@ public class MainActivity extends ListActivity
         		"HAVING MAX(l.log_time) = (SELECT MAX(log_time) FROM drinklog)", null);
         
         
+        SectionedAdapter adapter=new SectionedAdapter() {
+        	protected View getHeaderView(String caption, int index, View convertView, ViewGroup parent) {
+        		View result = convertView;
+        		if (result ==null) {
+        			result = getLayoutInflater().inflate(R.layout.sectionheader, parent, false);
+        			TextView textView = (TextView) result.findViewById(R.id.sectionHeader);
+        			textView.setText(caption);
+        		}
+        		return(result);
+        	}
+        };
+        
+        adapter.addSection("Last", new GradientAdapter(this, "Last", lastCursor));
+        adapter.addSection("Favourites", new GradientAdapter(this, "Favourites", favouriteCursor));
+        adapter.addSection("All drinks", new GradientAdapter(this, "All drinks", allCursor));
+        
+        setListAdapter(adapter);
+        
+        /*
         List<GradientAdapter> adapters = new ArrayList<GradientAdapter>();
         adapters.add(new GradientAdapter(this, "Last", lastCursor));
         adapters.add(new GradientAdapter(this, "Favourites", favouriteCursor));
         adapters.add(new GradientAdapter(this, "All drinks", allCursor));
         setListAdapter(new SectionAdapter(adapters));
-        
+        */
         //setListAdapter(new GradientAdapter(this));
     }
     
@@ -78,75 +92,6 @@ public class MainActivity extends ListActivity
     protected void onDestroy() {
     	db.close();
     	super.onDestroy();
-    }
-    
-    class SectionAdapter extends BaseAdapter {
-    	
-    	private List<GradientAdapter> adapters;
-    	
-    	
-    	public SectionAdapter(List<GradientAdapter> adapters) {
-    		this.adapters = adapters;
-    	}
-    	
-    	public int getCount() {
-    		int count = 0;
-    		for (Adapter a:adapters) {
-    			count++; //header
-				count += a.getCount();
-			}
-    		Log.d(TAG, " count all sections + headers:" + count);
-    		return count;
-    	}
-    	
-    	public Object getItem(int position) {
-    		int counter = 0;
-    		for(Adapter adapter:adapters) {
-    			if (position == counter) { //header
-    				return null;  
-    			}
-    			int size = adapter.getCount();
-    			if (counter + size >= position) {
-    				return adapter.getItem(position - counter - 1);
-    			}
-    			counter = counter + size + 1;
-    		}
-    		return null;
-    	}
-    	
-    	public long getItemId(int position) {
-    		return position; //TODO: convert to item id
-    	}
-    	public View getView(int position, View convertView, ViewGroup parent) {
-    		Log.d(TAG, "Requested view position:" + position);
-    		int counter = 0;
-    		for(GradientAdapter adapter:adapters) {
-    			if (position == counter) { //header
-    				View view = getLayoutInflater().inflate(R.layout.sectionheader, parent, false);
-    				TextView text = (TextView) view.findViewById(R.id.sectionHeader);
-    				text.setText(adapter.getHeader());
-    				return view;
-    			}
-    			int size = adapter.getCount();
-    			if (counter + size >= position) {
-    				return adapter.getView(position - counter - 1, convertView, parent);
-    			}
-    			counter = counter + size + 1;
-    		}
-    		return null;
-    	}
-    
-    	@Override
-    	public boolean isEnabled(int position) {
-    		int counter = 0;
-    		for(Adapter adapter:adapters) {
-    			if (position == counter) { //header
-    				return false;  
-    			}
-    			counter = counter + adapter.getCount() + 1;
-    		}
-    		return true; 
-    	}
     }
     
     
@@ -171,5 +116,4 @@ public class MainActivity extends ListActivity
 		}
     	
     }
-    
 }

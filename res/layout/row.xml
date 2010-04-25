@@ -18,8 +18,7 @@
   
   <TextView 
   	android:id="@+id/rowText"
-  	android:layout_width="fill_parent"
-  	android:layout_weight="1"
+  	android:layout_width="wrap_content"
   	android:layout_height="wrap_content"
   	style="@style/listFont"
   	android:layout_gravity="center_horizontal"
@@ -27,10 +26,8 @@
   </TextView>
     <TextView 
   	android:id="@+id/rowCounter"
-  	android:layout_width="fill_parent"
-  	android:layout_weight="1"
+  	android:layout_width="wrap_content"
   	android:layout_height="wrap_content"
-  	style="@style/listFont"
   	android:layout_gravity="right"
   	>
   </TextView>
