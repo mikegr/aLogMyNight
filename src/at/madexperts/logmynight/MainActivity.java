@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -35,6 +37,10 @@ public class MainActivity extends ListActivity
         DatabaseHelper.debug(db, "drinks");
         DatabaseHelper.debug(db, "drinklog");
         
+        updateList();
+    }
+
+    public void updateList() {
         //SELECT d._id, d.name as name, COUNT(l._id) as counter FROM drinks d LEFT OUTER JOIN drinklog l ON d._id = l.drink_id GROUP BY d._id, d.name;
         Cursor allCursor = db.rawQuery(
         		"SELECT d._id as _id, d.name as name, COUNT(l._id) as counter " +
@@ -59,7 +65,6 @@ public class MainActivity extends ListActivity
         		"GROUP BY d._id, d.name " +
         		"HAVING MAX(l.log_time) = (SELECT MAX(log_time) FROM drinklog)", null);
         
-        
         SectionedAdapter adapter=new SectionedAdapter() {
         	protected View getHeaderView(String caption, int index, View convertView, ViewGroup parent) {
         		View result = convertView;
@@ -70,23 +75,38 @@ public class MainActivity extends ListActivity
         		}
         		return(result);
         	}
+        	@Override
+        	public long getItemId(int position) {
+        		long value = super.getItemId(position);
+        		Log.d(TAG, "value=" + value);
+        		return value; 
+        	}
         };
         
         adapter.addSection("Last", new GradientAdapter(this, "Last", lastCursor));
         adapter.addSection("Favourites", new GradientAdapter(this, "Favourites", favouriteCursor));
         adapter.addSection("All drinks", new GradientAdapter(this, "All drinks", allCursor));
         
-        setListAdapter(adapter);
         
-        /*
-        List<GradientAdapter> adapters = new ArrayList<GradientAdapter>();
-        adapters.add(new GradientAdapter(this, "Last", lastCursor));
-        adapters.add(new GradientAdapter(this, "Favourites", favouriteCursor));
-        adapters.add(new GradientAdapter(this, "All drinks", allCursor));
-        setListAdapter(new SectionAdapter(adapters));
-        */
-        //setListAdapter(new GradientAdapter(this));
+        setListAdapter(adapter);
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	super.onActivityResult(requestCode, resultCode, data);
+    	updateList();
+    }
+    
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+    	super.onListItemClick(l, v, position, id);
+    	Log.d(TAG, "Clicked: position:" + position + ", id:" + id);
+    	
+    	Intent i = new Intent(this, LogActivity.class);
+		i.putExtra("drink", (int) id);
+		startActivityForResult(i, 0);
+		
+    }
+    
     
     @Override
     protected void onDestroy() {

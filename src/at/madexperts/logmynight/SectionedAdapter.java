@@ -130,7 +130,18 @@ abstract class SectionedAdapter extends BaseAdapter {
 
 
 	public long getItemId(int position) {
-		return(position);
+		for (Section section : this.sections) {
+			if (position==0) {
+				return -1; 
+			}
+			int size=section.adapter.getCount()+1;
+			
+			if (position<size) {
+				return(section.adapter.getItemId(position-1));
+			}
+			position-=size;
+		}
+		return -1;
 	}
 
 

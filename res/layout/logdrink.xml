@@ -17,6 +17,14 @@
 	android:layout_weight="1"
 	android:scaleType="centerInside"  -->
 </ImageView>
+<TextView 
+	android:text="" 
+	android:id="@+id/log_drink" 
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content"
+	>
+</TextView>
+
 <LinearLayout
 	android:id="@+id/linearLayout"
 	android:layout_above="@+id/priceSeekBar"
@@ -38,8 +46,10 @@
 	</TextView>
 	<EditText 
 		android:text="@+id/EditText01" 
-		android:id="@+id/priceEditText" 
-		android:layout_width="wrap_content" 
+		android:id="@+id/priceEditText"
+		android:inputType="numberDecimal" 
+		android:ems="4" 
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content">
 	</EditText>
 	<TextView 
@@ -50,7 +60,9 @@
 	</TextView>
 	<EditText 
 		android:text="1" 
-		android:id="@+id/countEditText" 
+		android:id="@+id/countEditText"
+		android:inputType="number"
+		android:ems="2" 
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content">
 	</EditText>
@@ -83,6 +95,7 @@
 	android:layout_height="wrap_content"
 	android:layout_above="@+id/logButton"
 	android:paddingLeft="10px" 
+	android:max="1500"
 	>
 </SeekBar>
 <Button 
