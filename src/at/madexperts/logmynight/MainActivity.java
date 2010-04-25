@@ -55,7 +55,7 @@ public class MainActivity extends ListActivity
         		"FROM drinks d " +
         		"LEFT OUTER JOIN drinklog l ON d._id = l.drink_id " +
         		"GROUP BY d._id, d.name " +
-        		"ORDER BY COUNT(l._id) DESC LIMIT 10"
+        		"ORDER BY COUNT(l._id) DESC LIMIT 3"
         		, null);
         
         //SELECT d._id, d.name as name, COUNT(l._id) as counter FROM drinks d LEFT OUTER JOIN drinklog l ON d._id = l.drink_id GROUP BY d._id, d.name HAVING MAX(l.log_time) = (SELECT MAX(log_time) FROM drinklog);
@@ -67,6 +67,7 @@ public class MainActivity extends ListActivity
         
         SectionedAdapter adapter=new SectionedAdapter() {
         	protected View getHeaderView(String caption, int index, View convertView, ViewGroup parent) {
+        		Log.d(TAG, "Caption: " + caption + " for " + index);
         		View result = convertView;
         		if (result ==null) {
         			result = getLayoutInflater().inflate(R.layout.sectionheader, parent, false);
