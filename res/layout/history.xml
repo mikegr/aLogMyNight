@@ -4,12 +4,13 @@
 	android:layout_height="fill_parent"
 	android:orientation="vertical"
 	>
-	<TextView 
+	<ListView 
 		android:text="" 
-		android:id="@+id/historyText"
-		android:layout_width="wrap_content" 
+		android:id="@+id/historyListView"
+		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content">
-	</TextView><Button 
+	</ListView>
+	<Button 
 		android:text="Change Time" 
 		android:id="@+id/historyTimeButton" 
 		android:layout_width="wrap_content" 
