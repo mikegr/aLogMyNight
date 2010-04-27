@@ -9,6 +9,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -38,6 +41,28 @@ public class MainActivity extends ListActivity
         DatabaseHelper.debug(db, "drinklog");
         
         updateList();
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	new MenuInflater(this).inflate(R.menu.mainmenu, menu);
+    	return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    		case R.id.historyMenuItem: 
+    			openHistory();
+    			return true;
+    	}
+    	// TODO Auto-generated method stub
+    	return super.onOptionsItemSelected(item);
+    }
+    
+    private void openHistory() {
+    	Intent intent = new Intent(this, HistoryActivity.class);
+    	startActivity(intent);
     }
 
     public void updateList() {

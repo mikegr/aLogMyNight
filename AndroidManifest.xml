@@ -15,5 +15,9 @@
         <activity android:name=".LogActivity"
                   android:label="@string/app_name">
         </activity>
+        <activity android:name=".HistoryActivity"
+                  android:label="History">
+        </activity>
+        
     </application>
 </manifest> 
