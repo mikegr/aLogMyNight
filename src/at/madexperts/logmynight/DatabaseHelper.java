@@ -36,6 +36,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("CREATE TABLE drinks (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, lastPrice INTEGER, alcohol INTEGER, volume INTEGER)");
 		db.execSQL("CREATE TABLE drinklog (_id INTEGER PRIMARY KEY AUTOINCREMENT, drink_id INTEGER, price INTEGER, log_time TEXT, FOREIGN KEY(drink_id) REFERENCES drinks(_id))");
 		db.execSQL("CREATE TABLE pics (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, creation TEXT, filename TEXT)");
+		db.execSQL("CREATE TABLE location (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, gps TEXT)");
 		addTestdata(db);
 	}
 
@@ -61,6 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE drinks");
 		if (oldVersion > 2) {
 			db.execSQL("DROP TABLE pics");	
+			db.execSQL("DROP TABLE location");
 		}
 		onCreate(db);
 	}

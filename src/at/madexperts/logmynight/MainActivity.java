@@ -26,12 +26,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -56,6 +58,20 @@ public class MainActivity extends ListActivity
         
         DatabaseHelper.debug(db, "drinks");
         DatabaseHelper.debug(db, "drinklog");
+        
+        AutoCompleteTextView auto = (AutoCompleteTextView) findViewById(R.id.mainLocationAutoCompleteTextView);
+        //auto.setAdapter(adapter)
+        auto.setOnEditorActionListener(new AutoCompleteTextView.OnEditorActionListener() {
+			
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if (event != null) {
+					Log.d(TAG, "keyCode: " + event.getKeyCode());
+				}
+				Log.d(TAG, "actionId: " + actionId);
+				Log.d(TAG, "ENTER: " + KeyEvent.KEYCODE_ENTER);
+				return false;
+			}
+		});
         
         updateList();
     }
