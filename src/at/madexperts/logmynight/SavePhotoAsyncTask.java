@@ -32,7 +32,7 @@ public class SavePhotoAsyncTask extends AsyncTask<byte[], String, String> {
 	}
 	@Override
 	protected String doInBackground(byte[]... jpeg) {
-		File dir = new File(Environment.getExternalStorageDirectory(), "at.madexperts.logmynight");
+		File dir = Utilities.getImageDirectory();
 		if (!dir.exists()) {
 			dir.mkdirs();
 		}
