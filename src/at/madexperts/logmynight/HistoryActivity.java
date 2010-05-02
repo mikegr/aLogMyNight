@@ -17,20 +17,32 @@
 */
 package at.madexperts.logmynight;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.LiveFolders;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-public class HistoryActivity extends Activity {
+public class HistoryActivity extends Activity implements OnClickListener {
 
+	private static final String TAG = HistoryActivity.class.getName();
 	private SQLiteDatabase db;
 	
 	private ListView listView;
+	private ListView sumView;
+	private Button button;
 	 
 
 	@Override
@@ -42,8 +54,31 @@ public class HistoryActivity extends Activity {
 		
 		setContentView(R.layout.history);
 		listView = (ListView) findViewById(R.id.historyListView);
-
+		sumView = (ListView) findViewById(R.id.historySum);
+		button = (Button) findViewById(R.id.historyTimeButton);
+		button.setOnClickListener(this);
 		showHistory(1);
+	}
+	
+	public void onClick(View v) {
+		Log.d(TAG, "onClick from ID: " + v.getId());
+		ArrayAdapter<String> a = new ArrayAdapter<String>(this, 
+				android.R.layout.simple_list_item_1, 
+				new String[] {"last 24h", "last week", "last month", "all"});
+		ListView view = new ListView(this);
+		view.setAdapter(a);
+		
+		TextView t = new TextView(this);
+		t.setText("Hallo");
+		t.setEnabled(true);
+		
+		//if (v.getId() == button.getId()) {
+			PopupWindow window = new PopupWindow(button, 300,300);
+ 			window.setContentView(t);
+			window.showAsDropDown(button);
+			
+			//window.showAsDropDown(button);
+		//}
 	}
 
 	private void showHistory(int days) {
@@ -54,6 +89,23 @@ public class HistoryActivity extends Activity {
 				"WHERE l.log_time >= datetime('now', '-1 day') " +
 				"GROUP BY d._id, d.name", null); //new String[] {Integer.toString(days)});
 		SimpleCursorAdapter adapter =  new SimpleCursorAdapter(this, R.layout.historyrow, cursor, new String[] {"name","counter","itemsum"}, new int[] {R.id.historyRowName, R.id.historyRowAmount, R.id.historyRowSum});		
+		
+		
+		Cursor sumCursor = db.rawQuery(
+				"SELECT '0' as _id, 'Sum:' as name, COUNT(l._id) as counter, SUM(l.price) as itemsum " +
+				"FROM drinks d JOIN drinklog l ON d._id = l.drink_id " +
+				"WHERE l.log_time >= datetime('now', '-1 day') ", null); //new String[] {Integer.toString(days)});
+		
+		SimpleCursorAdapter sumAdapter =  new SimpleCursorAdapter(this, R.layout.historyrow, sumCursor, new String[] {"name","counter","itemsum"}, new int[] {R.id.historyRowName, R.id.historyRowAmount, R.id.historyRowSum});
+		sumView.setAdapter(sumAdapter);
+		
+		View view = getLayoutInflater().inflate(R.layout.historyrow, null);
+		((TextView) view.findViewById(R.id.historyRowName)).setText("Item");
+		((TextView) view.findViewById(R.id.historyRowSum)).setText("Sum");
+		((TextView) view.findViewById(R.id.historyRowAmount)).setText("Amount");
+		
+		listView.addHeaderView(view);
+		
 		listView.setAdapter(adapter);
 	}
 
