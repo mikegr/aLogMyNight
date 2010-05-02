@@ -72,12 +72,20 @@ public class MainActivity extends ListActivity
     		case R.id.historyMenuItem: 
     			openHistory();
     			return true;
+    		case R.id.galleryMenuItem:
+    			openGallery();
+    			return true;
     	}
     	// TODO Auto-generated method stub
     	return super.onOptionsItemSelected(item);
     }
     
-    private void openHistory() {
+    private void openGallery() {
+		Intent intent = new Intent(this, GalleryActivity.class);
+		startActivity(intent);
+	}
+
+	private void openHistory() {
     	Intent intent = new Intent(this, HistoryActivity.class);
     	startActivity(intent);
     }

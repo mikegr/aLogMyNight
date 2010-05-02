@@ -6,4 +6,10 @@
 		android:visible="true" 
 		android:enabled="true">
 	</item>
+		<item 
+		android:id="@+id/galleryMenuItem" 
+		android:title="Gallery" 
+		android:visible="true" 
+		android:enabled="true">
+	</item>
 </menu>

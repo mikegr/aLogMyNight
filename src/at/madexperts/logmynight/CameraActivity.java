@@ -7,6 +7,7 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
@@ -56,6 +57,11 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,
 		mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 	}
 
+	@Override
+	protected void onDestroy() {
+		db.close();
+		super.onDestroy();
+	}
 	public void surfaceCreated(SurfaceHolder holder) {
 		mCamera = Camera.open();
 		try {
@@ -114,13 +120,17 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,
 			
 			public void onClick(View v) {
 				dlg.dismiss();
-				Log.d(TAG, "Entered name: " + edit.getText().toString());
+				String name = edit.getText().toString();
+				Log.d(TAG, "Entered name: " + name);
 				String filename = DateFormat.format("yyyyMMdd-kkmmss", new Date()) + ".jpg";
 				new SavePhotoAsyncTask(filename).execute(data);
+				db.execSQL("INSERT INTO pics (name, filename) VALUES (?,?)", new String[] {name, filename});
+				finish();
+				
+				
 			}
 		});
 		dlg.setContentView(view);
-		
 		dlg.setTitle("Enter name:");
 		dlg.show();
 
