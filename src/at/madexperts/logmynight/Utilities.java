@@ -9,10 +9,10 @@ public class Utilities {
 	public static final String NAME = "at.madexperts.logmynight";
 	public static File getImageDirectory() {
 		File file = new File(Environment.getExternalStorageDirectory(), NAME);
-		file.mkdirs();
+		if(!file.exists())
+			file.mkdirs();
 		return file;
 	}
-	
 	public static int getIcon(int category) {
 		switch(category) {
 			case 0: return R.drawable.icon_anti_small;
