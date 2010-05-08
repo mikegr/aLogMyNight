@@ -117,9 +117,13 @@ public class LogActivity extends Activity implements OnClickListener{
 		int count = Integer.parseInt(times.getText().toString());
 		Log.d(TAG, "count: " + count);
 		
+		long loc_id = getSharedPreferences("default", MODE_PRIVATE).getLong("location", -1);
+		Log.d(TAG, "Using this location for drink logging: " + loc_id);
+		
 		db.execSQL("UPDATE drinks set lastPrice = ? WHERE _id = ?", new String[] {newPrice, Integer.toString(drink)});
 		for (int i = 0; i < count; i++) {
-			db.execSQL("INSERT INTO drinklog (drink_id, price, log_time) VALUES (?, ?, datetime('now'))", new String[] {Integer.toString(drink), newPrice});	
+			db.execSQL("INSERT INTO drinklog (drink_id, location_id, price, log_time) VALUES (?, ?, ?, datetime('now'))", 
+					new String[] {Integer.toString(drink), Long.toString(loc_id), newPrice});	
 		}
 		finish();
 		
