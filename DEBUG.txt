@@ -1,0 +1,3 @@
+Datebase is in /data/data/at.madexperts.logmynight/databases/LogMyNight
+To query database use 
+# sqlite3 /data/data/at.madexperts.logmynight/databases/LogMyNight
