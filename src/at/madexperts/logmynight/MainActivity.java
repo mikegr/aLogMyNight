@@ -23,6 +23,7 @@ import org.apache.http.client.CircularRedirectException;
 
 import android.app.Dialog;
 import android.app.ListActivity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -43,6 +44,7 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -78,45 +80,56 @@ public class MainActivity extends ListActivity
 				Log.d(TAG, "actionId: " + actionId);
 				Log.d(TAG, "ENTER: " + KeyEvent.KEYCODE_ENTER);
 				
-				LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-				
-				List<String> provs = lm.getAllProviders();
-				for (String prov : provs) {
-					Log.d(TAG, "Provider: " + prov);
-				}
-				Criteria c = new Criteria();
-				c.setAccuracy(Criteria.ACCURACY_COARSE);
-				c.setAltitudeRequired(false);
-				c.setBearingRequired(false);
-				c.setCostAllowed(false);
-				c.setPowerRequirement(Criteria.NO_REQUIREMENT);
-				c.setSpeedRequired(false);
-				String provider = lm.getBestProvider(c, true);
-				Log.d(TAG, "Used provider: " + provider);
-				Location location = lm.getLastKnownLocation(provider);
-				double lat = 0;
-				double lon = 0;
+				Location location = getLocation();
+				double tmplat = 0;
+				double tmplon = 0;
 				if (location != null) {
-					lat = location.getLatitude();
-					lon = location.getLongitude();
+					tmplat = location.getLatitude();
+					tmplon = location.getLongitude();
 				}
-				String name = auto.getText().toString();
-				Integer id = getLocationId(name);
+				final double lat = tmplat;
+				final double lon = tmplon;
+				final String name = auto.getText().toString();
+				final Integer id = getLocationId(name);
 				Log.d(TAG, "Id of entered Location: " + id);
-				if ((id == null) || (id != null && hasLocationData(id))) {
+				if ((id == null) || (id != null && ! hasLocationData(id))) {
 					Log.d(TAG, "Open dialog");
 					View view = getLayoutInflater().inflate(R.layout.yesnodialog, null);
-					//TextView text = (TextView) view.findViewById(R.id.yesNoDialogText);
+					final Dialog dlg = new Dialog(MainActivity.this);
+					Button yes = (Button) view.findViewById(R.id.yesNoDialogYesButton);
+					yes.setOnClickListener(new View.OnClickListener() {
+						public void onClick(View v) {
+							dlg.dismiss();
+							if (id == null) {
+								long newId = insertLocation(name, lat, lon);
+								updateCurrentLocation(newId);
+							}
+							else {
+								updateLocation(id, name, lat, lon);
+								updateCurrentLocation(id);
+							}
+						}
+					});
+					Button no = (Button) view.findViewById(R.id.yesNoDialogNoButton);
+					no.setOnClickListener(new View.OnClickListener() {
+						public void onClick(View v) {
+							dlg.dismiss();
+							if (id == null) {
+								long newId = insertLocation(name);
+								updateCurrentLocation(newId);
+							}
+							//else do nothing
+						}
+					});
 					
-					Dialog dlg = new Dialog(MainActivity.this);
 					dlg.setTitle("Sind Sie am aktuellen Ort?");
 					dlg.setContentView(view);
 					Log.d(TAG, "Show dialog");
 					dlg.show();
 				}
 				else {
-					SharedPreferences prefs = getSharedPreferences("default", MODE_PRIVATE);
-					prefs.edit().putInt("location", id);
+					// id not null + has location data already
+					updateCurrentLocation(id);
 					Log.d(TAG, "Lat: " + lat + ";Long:" + lon);
 				}
 				return false;
@@ -124,6 +137,25 @@ public class MainActivity extends ListActivity
 		});
         
         updateList();
+    }
+    
+    private Location getLocation() {
+		LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+		
+		List<String> provs = lm.getAllProviders();
+		for (String prov : provs) {
+			Log.d(TAG, "Provider: " + prov);
+		}
+		Criteria c = new Criteria();
+		c.setAccuracy(Criteria.ACCURACY_COARSE);
+		c.setAltitudeRequired(false);
+		c.setBearingRequired(false);
+		c.setCostAllowed(false);
+		c.setPowerRequirement(Criteria.NO_REQUIREMENT);
+		c.setSpeedRequired(false);
+		String provider = lm.getBestProvider(c, true);
+		Log.d(TAG, "Used provider: " + provider);
+		return lm.getLastKnownLocation(provider);
     }
     
     @Override
@@ -146,6 +178,28 @@ public class MainActivity extends ListActivity
     	return super.onOptionsItemSelected(item);
     }
     
+    private void updateCurrentLocation(long id) {
+    	SharedPreferences prefs = getSharedPreferences("default", MODE_PRIVATE);
+		prefs.edit().putLong("location", id);	
+    }
+    
+    
+    private Long insertLocation(String name) {
+    	ContentValues cv = new ContentValues();
+    	cv.put("name", name);
+    	return db.insert("location", null, cv); // table, nullColumnHack, values) execSQL("INSERT INTO location (_id, name, latitude, longitude) VALUES (null, ?, null, null)", new String[] {name});
+    }
+    private Long insertLocation(String name, double latitude, double longitude) {
+    	ContentValues cv = new ContentValues();
+    	cv.put("name", name);
+    	cv.put("latitude", latitude);
+    	cv.put("longitude", longitude);
+    	return db.insert("location", null, cv);
+    }
+    
+    private void updateLocation(long id, String name, double lat, double lon) {
+    	db.execSQL("UPDATE location SET name = ?, latitude = ?, longitude = ? WHERE _id = ?", new String[] {name, Double.toString(lat), Double.toString(lon), Long.toString(id)});
+    }
     
     private Integer getLocationId(String name){
     	Cursor c = db.rawQuery("SELECT _id FROM location WHERE lower(name) = lower(?)", new String[] {name});
@@ -159,7 +213,7 @@ public class MainActivity extends ListActivity
     }
     
     private boolean hasLocationData(int id) {
-    	Cursor c = db.rawQuery("SELECT latitude, longitude FROM location WHERE _id ?", new String[] {Integer.toString(id)});
+    	Cursor c = db.rawQuery("SELECT latitude, longitude FROM location WHERE _id = ?", new String[] {Integer.toString(id)});
     	if (c.moveToFirst()) {
         	if (c.isNull(0) || c.isNull(1)) {
         		return false;
