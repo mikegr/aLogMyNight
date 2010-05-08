@@ -28,15 +28,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = DatabaseHelper.class.getName();
 	public DatabaseHelper(Context ctx) {
-		super(ctx, "LogMyNight", null, 3);
+		super(ctx, "LogMyNight", null, 4);
 	}
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		Log.v(TAG, "Creating database");
 		db.execSQL("CREATE TABLE drinks (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, lastPrice INTEGER, alcohol INTEGER, volume INTEGER)");
-		db.execSQL("CREATE TABLE drinklog (_id INTEGER PRIMARY KEY AUTOINCREMENT, drink_id INTEGER, price INTEGER, log_time TEXT, FOREIGN KEY(drink_id) REFERENCES drinks(_id))");
+		db.execSQL("CREATE TABLE drinklog (_id INTEGER PRIMARY KEY AUTOINCREMENT, drink_id INTEGER, location_id INTEGER, price INTEGER, log_time TEXT, FOREIGN KEY(drink_id) REFERENCES drinks(_id), FOREIGN KEY(location_id) REFERENCES location(_id))");
 		db.execSQL("CREATE TABLE pics (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, creation TEXT, filename TEXT)");
-		db.execSQL("CREATE TABLE location (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, gps TEXT)");
+		db.execSQL("CREATE TABLE location (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, longitude FLOAT, latitude FLOAT)");
 		addTestdata(db);
 	}
 
@@ -62,6 +62,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE drinks");
 		if (oldVersion > 2) {
 			db.execSQL("DROP TABLE pics");	
+		}
+		if (oldVersion > 3) {
 			db.execSQL("DROP TABLE location");
 		}
 		onCreate(db);

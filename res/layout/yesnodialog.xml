@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical"
+  >
+	<LinearLayout  
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_gravity="center_horizontal"
+		>
+		<Button 
+			android:id="@+id/yesNoDialogYesButton"
+			android:text="Ja" 
+			android:layout_width="100dip" 
+			android:layout_height="wrap_content">
+		</Button>
+		<Button 
+			android:id="@+id/yesNoDialogNoButton"
+			android:text="Nein" 
+			android:layout_width="100dip" 
+			android:layout_height="wrap_content">
+		</Button>
+	</LinearLayout>
+</LinearLayout>

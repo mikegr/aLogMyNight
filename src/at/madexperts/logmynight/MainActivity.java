@@ -19,12 +19,20 @@ package at.madexperts.logmynight;
 
 import java.util.List;
 
+import org.apache.http.client.CircularRedirectException;
+
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -59,7 +67,7 @@ public class MainActivity extends ListActivity
         DatabaseHelper.debug(db, "drinks");
         DatabaseHelper.debug(db, "drinklog");
         
-        AutoCompleteTextView auto = (AutoCompleteTextView) findViewById(R.id.mainLocationAutoCompleteTextView);
+        final AutoCompleteTextView auto = (AutoCompleteTextView) findViewById(R.id.mainLocationAutoCompleteTextView);
         //auto.setAdapter(adapter)
         auto.setOnEditorActionListener(new AutoCompleteTextView.OnEditorActionListener() {
 			
@@ -69,6 +77,48 @@ public class MainActivity extends ListActivity
 				}
 				Log.d(TAG, "actionId: " + actionId);
 				Log.d(TAG, "ENTER: " + KeyEvent.KEYCODE_ENTER);
+				
+				LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+				
+				List<String> provs = lm.getAllProviders();
+				for (String prov : provs) {
+					Log.d(TAG, "Provider: " + prov);
+				}
+				Criteria c = new Criteria();
+				c.setAccuracy(Criteria.ACCURACY_COARSE);
+				c.setAltitudeRequired(false);
+				c.setBearingRequired(false);
+				c.setCostAllowed(false);
+				c.setPowerRequirement(Criteria.NO_REQUIREMENT);
+				c.setSpeedRequired(false);
+				String provider = lm.getBestProvider(c, true);
+				Log.d(TAG, "Used provider: " + provider);
+				Location location = lm.getLastKnownLocation(provider);
+				double lat = 0;
+				double lon = 0;
+				if (location != null) {
+					lat = location.getLatitude();
+					lon = location.getLongitude();
+				}
+				String name = auto.getText().toString();
+				Integer id = getLocationId(name);
+				Log.d(TAG, "Id of entered Location: " + id);
+				if ((id == null) || (id != null && hasLocationData(id))) {
+					Log.d(TAG, "Open dialog");
+					View view = getLayoutInflater().inflate(R.layout.yesnodialog, null);
+					//TextView text = (TextView) view.findViewById(R.id.yesNoDialogText);
+					
+					Dialog dlg = new Dialog(MainActivity.this);
+					dlg.setTitle("Sind Sie am aktuellen Ort?");
+					dlg.setContentView(view);
+					Log.d(TAG, "Show dialog");
+					dlg.show();
+				}
+				else {
+					SharedPreferences prefs = getSharedPreferences("default", MODE_PRIVATE);
+					prefs.edit().putInt("location", id);
+					Log.d(TAG, "Lat: " + lat + ";Long:" + lon);
+				}
 				return false;
 			}
 		});
@@ -94,6 +144,29 @@ public class MainActivity extends ListActivity
     	}
     	// TODO Auto-generated method stub
     	return super.onOptionsItemSelected(item);
+    }
+    
+    
+    private Integer getLocationId(String name){
+    	Cursor c = db.rawQuery("SELECT _id FROM location WHERE lower(name) = lower(?)", new String[] {name});
+    	if (c.moveToFirst()) {
+    		if (c.isNull(0)) {
+    			return null;
+    	    }
+    		return c.getInt(0);
+    	}
+    	return null; 
+    }
+    
+    private boolean hasLocationData(int id) {
+    	Cursor c = db.rawQuery("SELECT latitude, longitude FROM location WHERE _id ?", new String[] {Integer.toString(id)});
+    	if (c.moveToFirst()) {
+        	if (c.isNull(0) || c.isNull(1)) {
+        		return false;
+        	}
+        	return true;
+    	}
+    	return false;
     }
     
     private void openGallery() {
