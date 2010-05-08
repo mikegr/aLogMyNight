@@ -8,7 +8,9 @@ public class Utilities {
 
 	public static final String NAME = "at.madexperts.logmynight";
 	public static File getImageDirectory() {
-		return new File(Environment.getExternalStorageDirectory(), NAME);  
+		File file = new File(Environment.getExternalStorageDirectory(), NAME);
+		file.mkdirs();
+		return file;
 	}
 	
 }
