@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -49,11 +50,15 @@ public class LogActivity extends Activity implements OnClickListener{
 		
 		db = new DatabaseHelper(this).getWritableDatabase();
 		
-		Cursor c = db.rawQuery("SELECT name, lastPrice FROM drinks WHERE _id = ?", new String[] {Integer.toString(drink)});
+		Cursor c = db.rawQuery("SELECT name, category, lastPrice FROM drinks WHERE _id = ?", new String[] {Integer.toString(drink)});
 		c.moveToFirst();
 		
 		TextView nameView = (TextView) findViewById(R.id.log_drink);
 		nameView.setText(c.getString(c.getColumnIndexOrThrow("name")));
+		
+		ImageView imageView = (ImageView) findViewById(R.id.drinkImageView);
+		int category = c.getInt(c.getColumnIndex("category"));
+		imageView.setImageResource(Utilities.getBigIcon(category));
 		
 		int priceValue = c.getInt(c.getColumnIndexOrThrow("lastPrice"));
 		price = (EditText) findViewById(R.id.priceEditText);

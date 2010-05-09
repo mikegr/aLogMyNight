@@ -3,27 +3,30 @@
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent" 
 	>
+<TextView 
+	android:text="" 
+	android:id="@+id/log_drink"
+	android:layout_alignParentTop="true" 
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content"
+	android:layout_centerHorizontal="true"
+	android:textSize="30dip"
+	android:textStyle="bold"
+	>
+</TextView>
 <ImageView 
 	android:id="@+id/drinkImageView"
 	android:src="@drawable/beer" 
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent"
-	
-	android:scaleType="fitXY"
-	
 	android:layout_above="@+id/linearLayout"
-	>
-	<!-- 
+	android:layout_below="@+id/log_drink"
 	android:layout_weight="1"
+	>
+	<!--
+	android:scaleType="fitXY" 
 	android:scaleType="centerInside"  -->
 </ImageView>
-<TextView 
-	android:text="" 
-	android:id="@+id/log_drink" 
-	android:layout_width="wrap_content" 
-	android:layout_height="wrap_content"
-	>
-</TextView>
 
 <LinearLayout
 	android:id="@+id/linearLayout"

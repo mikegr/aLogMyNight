@@ -19,8 +19,6 @@ package at.madexperts.logmynight;
 
 import java.util.List;
 
-import org.apache.http.client.CircularRedirectException;
-
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.ContentValues;
@@ -33,7 +31,6 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -41,10 +38,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -236,7 +232,7 @@ public class MainActivity extends ListActivity
     public void updateList() {
         //SELECT d._id, d.name as name, COUNT(l._id) as counter FROM drinks d LEFT OUTER JOIN drinklog l ON d._id = l.drink_id GROUP BY d._id, d.name;
         Cursor allCursor = db.rawQuery(
-        		"SELECT d._id as _id, d.name as name, COUNT(l._id) as counter " +
+        		"SELECT d._id as _id, d.name as name, d.category as category, COUNT(l._id) as counter " +
         		"FROM drinks d " +
         		"LEFT OUTER JOIN drinklog l ON d._id = l.drink_id " +
         		"GROUP BY d._id, d.name", null);
@@ -244,7 +240,7 @@ public class MainActivity extends ListActivity
         
         //SELECT d._id, d.name as name, COUNT(l._id) as counter FROM drinks d LEFT OUTER JOIN drinklog l ON d._id = l.drink_id GROUP BY d._id, d.name ORDER BY COUNT(l._id) DESC LIMIT 10;
         Cursor favouriteCursor = db.rawQuery(
-        		"SELECT d._id as _id, d.name as name, COUNT(l._id) as counter " +
+        		"SELECT d._id as _id, d.name as name, d.category as category, COUNT(l._id) as counter " +
         		"FROM drinks d " +
         		"LEFT OUTER JOIN drinklog l ON d._id = l.drink_id " +
         		"GROUP BY d._id, d.name " +
@@ -253,7 +249,7 @@ public class MainActivity extends ListActivity
         
         //SELECT d._id, d.name as name, COUNT(l._id) as counter FROM drinks d LEFT OUTER JOIN drinklog l ON d._id = l.drink_id GROUP BY d._id, d.name HAVING MAX(l.log_time) = (SELECT MAX(log_time) FROM drinklog);
         Cursor lastCursor = db.rawQuery(
-        		"SELECT d._id as _id, d.name as name, COUNT(l._id) as counter " +
+        		"SELECT d._id as _id, d.name as name, d.category as category, COUNT(l._id) as counter " +
         		"FROM drinks d LEFT OUTER JOIN drinklog l ON d._id = l.drink_id " +
         		"GROUP BY d._id, d.name " +
         		"HAVING MAX(l.log_time) = (SELECT MAX(log_time) FROM drinklog)", null);
@@ -312,9 +308,20 @@ public class MainActivity extends ListActivity
     class GradientAdapter extends SimpleCursorAdapter {
     	private String header;
     	public GradientAdapter(Context ctx, String header, Cursor cursor) {
-			super(ctx, R.layout.row, cursor, new String[] {"name", "counter"}, new int[] {R.id.rowText, R.id.rowCounter});
+			super(ctx, R.layout.row, cursor, new String[] {"name", "counter", "category"}, new int[] {R.id.rowText, R.id.rowCounter, R.id.rowImage});
 			this.header = header;
 		}
+    	
+    	/*
+    	@Override
+    	
+    	public void setViewImage(ImageView v, String value) {
+    		Log.d(TAG, "setImageView: " + value);
+    		super.setViewImage(v, getIcon(value));
+    	}
+    	*/
+    	
+    	
     	
     	@Override
     	public View getView(int position, View convertView, ViewGroup parent) {
@@ -322,6 +329,10 @@ public class MainActivity extends ListActivity
     		View view = super.getView(position, convertView, parent);
     		//setBackgroundResource(R.drawable.entry);
     		view.setBackgroundResource(R.drawable.entry);
+    		ImageView imageView = (ImageView) view.findViewById(R.id.rowImage);
+    		Cursor cursor = getCursor();
+    		int category = cursor.getInt(cursor.getColumnIndex("category"));
+    		imageView.setImageResource(Utilities.getIcon(category));
     		return view;
     	}
     	
