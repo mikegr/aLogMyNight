@@ -17,7 +17,11 @@
 */
 package at.madexperts.logmynight;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 import android.app.Dialog;
 import android.app.ListActivity;
@@ -26,6 +30,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Criteria;
 import android.location.Location;
@@ -38,13 +43,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-
+import static java.lang.Math.*;
 
 public class MainActivity extends ListActivity
 {
@@ -53,6 +60,7 @@ public class MainActivity extends ListActivity
 	
 	
 	SQLiteDatabase db;
+	AutoCompleteTextView auto;
 	
     /** Called when the activity is first created. */
     @Override
@@ -65,8 +73,19 @@ public class MainActivity extends ListActivity
         DatabaseHelper.debug(db, "drinks");
         DatabaseHelper.debug(db, "drinklog");
         
-        final AutoCompleteTextView auto = (AutoCompleteTextView) findViewById(R.id.mainLocationAutoCompleteTextView);
+        auto = (AutoCompleteTextView) findViewById(R.id.mainLocationAutoCompleteTextView);
+        auto.setThreshold(0);
+        auto.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			public void onFocusChange(View v, boolean hasFocus) {
+				Log.d(TAG, "onFocusChange");
+				if (hasFocus) {
+					updateLocationAdapter();
+				}
+			}
+		});
         //auto.setAdapter(adapter)
+        
         auto.setOnEditorActionListener(new AutoCompleteTextView.OnEditorActionListener() {
 			
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -76,6 +95,7 @@ public class MainActivity extends ListActivity
 				Log.d(TAG, "actionId: " + actionId);
 				Log.d(TAG, "ENTER: " + KeyEvent.KEYCODE_ENTER);
 				
+				updateLocationAdapter();
 				Location location = getLocation();
 				double tmplat = 0;
 				double tmplon = 0;
@@ -152,6 +172,51 @@ public class MainActivity extends ListActivity
 		String provider = lm.getBestProvider(c, true);
 		Log.d(TAG, "Used provider: " + provider);
 		return lm.getLastKnownLocation(provider);
+    }
+    
+
+    private void updateLocationAdapter() {
+		Location location = getLocation();
+		Log.d(TAG, "Got location" + location);
+		auto.setAdapter(getSortedNameAdapter(location));
+    }
+    private ArrayAdapter<String> getSortedNameAdapter(Location location) {
+    	double latNow = 0.0;
+    	double lonNow = 0.0;
+    	if (location != null) {
+    		latNow = location.getLatitude() + 90.0;
+    		lonNow = location.getLongitude() + 180.0;
+    	}
+    	
+		Cursor c = db.rawQuery("SELECT _id, name, longitude, latitude FROM location", null);
+		TreeMap<Double, List<String>> map = new TreeMap<Double, List<String>>();
+		while (c.moveToNext()) {
+			double latRow = c.getDouble(c.getColumnIndex("longitude")) + 90.0;
+			double lonRow = c.getDouble(c.getColumnIndex("latitude")) + 180.0;
+			String name = c.getString(c.getColumnIndex("name"));
+			double distance = euklidDistance(latNow, lonNow, latRow, lonRow);
+			List<String> list = map.get(distance);
+			if (list == null) {
+				list = new ArrayList<String>();
+				map.put(distance, list);
+			}
+			list.add(name);
+			Log.d(TAG, name + " has distance of " + distance);
+		}
+		ArrayList<String> values = new ArrayList<String>();
+		for (List<String> list: map.values()) {
+			for(String value:list) {
+				values.add(value);
+				Log.d(TAG, "Sorted:" + value);
+			}
+		}
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, values);
+    	return adapter;
+    	
+    }
+    
+    private double euklidDistance(double x1, double y1, double x2, double y2) {
+    	return sqrt( pow(abs(x1 - x2),2) * pow(abs(y1 - y2),2) );
     }
     
     @Override
