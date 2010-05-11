@@ -10,7 +10,7 @@ public class BarChartDummyData {
 		
 		BarItem item1 = new BarItem("halbe Bier", 300);
 		BarItem item2 = new BarItem("große Bier", 200);
-		BarItem item3 = new BarItem("Mockito", 100);
+		BarItem item3 = new BarItem("Mockito ASDF ASDf ASDF", 100);
 		BarItem item4 = new BarItem("Schnaps", 50);
 		BarItem item5 = new BarItem("Mineral", 20);
 		BarItem item6 = new BarItem("Red Bull", 10);
