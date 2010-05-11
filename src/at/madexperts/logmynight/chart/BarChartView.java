@@ -1,5 +1,6 @@
 package at.madexperts.logmynight.chart;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,7 +24,9 @@ public class BarChartView extends View {
 	private float STROKE_WIDTH = 1;
 	private float LABEL_WIDTH = 2;
 	
-	private float LABEL_SPACE_TO_BAR = 16f;
+	private float NAME_LABEL_SPACE_TO_BAR = 16f;
+	private float AMOUNT_LABEL_SPACE_TO_BAR = 5f;
+	private float Y_LABEL_SPACE_TO_LINE = 5f;
 
 	private Paint strokePaint;
 	private Paint labelPaint;
@@ -37,7 +40,7 @@ public class BarChartView extends View {
 
 	private Paint[] barPaints;
 
-	private List<BarItem> barItems;
+	private List<BarItem> barItems = new ArrayList<BarItem>();
 
 	// ===========================================================
 	// Constructors
@@ -95,13 +98,14 @@ public class BarChartView extends View {
 	public void setData(List<BarItem> barItems) {
 		this.barItems = barItems;
 
-		Collections.sort(barItems);
+		if (barItems != null && barItems.size() > 0) {
+			Collections.sort(barItems);
+			invalidate();
+		}
 	}
 
 	private void drawBars(Canvas canvas, float width, float height,
 			float stopX, float stopY, float lineWidth, float lineHeight) {
-		
-		setData(BarChartDummyData.getTestData());
 		
 		int counter = 0;
 		
@@ -141,7 +145,12 @@ public class BarChartView extends View {
 
 			canvas.drawRect(left, top, right, bottom, barPaints[counter]);
 			
-			canvas.drawText(barItem.getName(), pointerInWidth - halfWidthOfBar, stopY + LABEL_SPACE_TO_BAR, labelPaint);
+			//name
+			canvas.drawText(barItem.getName(), pointerInWidth - halfWidthOfBar, stopY + NAME_LABEL_SPACE_TO_BAR, labelPaint);
+			
+			//amount
+			canvas.drawText(String.valueOf(barItem.getAmount()), pointerInWidth - halfWidthOfBar, 
+					top - AMOUNT_LABEL_SPACE_TO_BAR, labelPaint);
 			
 			//set pointer one bar up
 			pointerInWidth += space;
@@ -167,7 +176,11 @@ public class BarChartView extends View {
 			float bottom = stopY;
 			
 			canvas.drawRect(left, top, right, bottom, barPaints[5]);			
-			canvas.drawText("Others", pointerInWidth - halfWidthOfBar, stopY + LABEL_SPACE_TO_BAR, labelPaint);
+			canvas.drawText("Others", pointerInWidth - halfWidthOfBar, stopY + NAME_LABEL_SPACE_TO_BAR, labelPaint);
+			
+			//amount
+			canvas.drawText(String.valueOf((int)sumAmountOfRest), pointerInWidth - halfWidthOfBar, 
+					top - AMOUNT_LABEL_SPACE_TO_BAR, labelPaint);
 		}
 	}
 
@@ -202,18 +215,13 @@ public class BarChartView extends View {
 				+ " - " + stopX + "/" + stopY);
 		canvas.drawLine(startXVertical, startYVertical, stopX, stopY
 				+ STROKE_WIDTH / 2f, strokePaint);
-
+		
+		//draw y label
+		 canvas.translate(stopX - Y_LABEL_SPACE_TO_LINE, (stopY - startYVertical)/2 + startYVertical);
+		canvas.rotate(-90);
+		canvas.drawText("Menge", 0, 0,labelPaint);
+		canvas.restore();
+		
 		drawBars(canvas, width, height, stopX, stopY, lineWidth, lineHeight);
-
-		// left <= right and top <= bottom
-
-		// canvas.drawRect(left, top, right, bottom, strokePaint);
-
-		// canvas.drawText("Menge", width / 2f + 5f, stopY + 3f, strokePaint);
-		//		
-		// canvas.drawCircle(200, 200, 50, strokePaint);
-		// canvas.drawBitmap(BitmapFactory.decodeResource(mContext.getResources(),
-		// R.drawable.icon), 184, 184, null);
-		//invalidate();
 	}
 }
