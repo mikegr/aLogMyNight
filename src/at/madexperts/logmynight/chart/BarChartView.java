@@ -8,6 +8,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -23,14 +25,14 @@ public class BarChartView extends View {
 
 	private float STROKE_WIDTH = 1;
 	private float LABEL_WIDTH = 2;
-	
-	private float NAME_LABEL_SPACE_TO_BAR = 16f;
+
+	private float NAME_LABEL_SPACE_TO_BAR = 2f;
 	private float AMOUNT_LABEL_SPACE_TO_BAR = 5f;
 	private float Y_LABEL_SPACE_TO_LINE = 5f;
 
 	private Paint strokePaint;
 	private Paint labelPaint;
-	
+
 	private Paint bar1Paint;
 	private Paint bar2Paint;
 	private Paint bar3Paint;
@@ -59,7 +61,7 @@ public class BarChartView extends View {
 		strokePaint = new Paint();
 		strokePaint.setStrokeWidth(STROKE_WIDTH);
 		strokePaint.setColor(Color.GRAY);
-		
+
 		labelPaint = new Paint();
 		labelPaint.setStrokeWidth(LABEL_WIDTH);
 		labelPaint.setColor(Color.GRAY);
@@ -84,15 +86,14 @@ public class BarChartView extends View {
 		bar5Paint = new Paint();
 		bar5Paint.setStrokeWidth(STROKE_WIDTH);
 		bar5Paint.setColor(Color.MAGENTA);
-		
+
 		bar6Paint = new Paint();
 		bar6Paint.setStrokeWidth(STROKE_WIDTH);
 		bar6Paint.setColor(Color.CYAN);
 
-
 		barPaints = new Paint[] { bar1Paint, bar2Paint, bar3Paint, bar4Paint,
 				bar5Paint, bar6Paint };
-	
+
 	}
 
 	public void setData(List<BarItem> barItems) {
@@ -106,81 +107,113 @@ public class BarChartView extends View {
 
 	private void drawBars(Canvas canvas, float width, float height,
 			float stopX, float stopY, float lineWidth, float lineHeight) {
-		
+
 		int counter = 0;
-		
-		float spaceForFigureOnFirstBar = 20f;	
-		
+
+		float spaceForFigureOnFirstBar = 20f;
+
 		float heightOfOneDrink = 0;
-		
-		float space = lineWidth/6f;
-		float widthOfBar = space/2f;
+
+		float space = lineWidth / 6f;
+		float widthOfBar = space / 2f;
 		float halfWidthOfBar = widthOfBar / 2f;
-		
-		//float leftFirstBar = STROKE_REDUCE_X_LEFT + spaceForFigureOnFirstBar;
-		float heightOfFirstBar = stopY - STROKE_REDUCE_Y_TOP - spaceForFigureOnFirstBar;
-		
+
+		// float leftFirstBar = STROKE_REDUCE_X_LEFT + spaceForFigureOnFirstBar;
+		float heightOfFirstBar = stopY - STROKE_REDUCE_Y_TOP
+				- spaceForFigureOnFirstBar;
+
 		float pointerInWidth = stopX + space - halfWidthOfBar;
-		
+
 		for (BarItem barItem : barItems) {
-			
-			float amount = (float)barItem.getAmount();
-			
-			if(heightOfOneDrink == 0) {
-				heightOfOneDrink = heightOfFirstBar/amount;
+
+			float amount = (float) barItem.getAmount();
+
+			if (heightOfOneDrink == 0) {
+				heightOfOneDrink = heightOfFirstBar / amount;
 				Log.d(TAG, "heightOfOneDrink: " + heightOfOneDrink);
 			}
-		
-			//float left = leftFirstBar;
+
+			// float left = leftFirstBar;
 			float heightOfBar = amount * heightOfOneDrink;
-			
+
 			float left = pointerInWidth - widthOfBar;
-			float top = stopY-heightOfBar;
+			float top = stopY - heightOfBar;
 			float right = pointerInWidth;
 			float bottom = stopY;
-			
-			Log.d(TAG, "amount: " + amount + "left: " + left + " top: " + top + " right: " + right + "bottom: " + bottom);
+
+			Log.d(TAG, "amount: " + amount + "left: " + left + " top: " + top
+					+ " right: " + right + "bottom: " + bottom);
 
 			// left <= right and top <= bottom
 
 			canvas.drawRect(left, top, right, bottom, barPaints[counter]);
+
+			// name
+			canvas.save();
 			
-			//name
-			canvas.drawText(barItem.getName(), pointerInWidth - halfWidthOfBar, stopY + NAME_LABEL_SPACE_TO_BAR, labelPaint);
+			float tempX = pointerInWidth - halfWidthOfBar;
+			float tempY = stopY + NAME_LABEL_SPACE_TO_BAR;
+			canvas.translate(tempX, tempY);
+			StaticLayout layout = new StaticLayout(barItem.getName(), new TextPaint(labelPaint), (int)space-2,
+					android.text.Layout.Alignment.ALIGN_NORMAL, 1.0f,
+					0f, true);
+	
+			layout.draw(canvas);
+			canvas.restore();
 			
-			//amount
-			canvas.drawText(String.valueOf(barItem.getAmount()), pointerInWidth - halfWidthOfBar, 
-					top - AMOUNT_LABEL_SPACE_TO_BAR, labelPaint);
-			
-			//set pointer one bar up
+//			canvas.drawText(barItem.getName(), pointerInWidth - halfWidthOfBar,
+//					stopY + NAME_LABEL_SPACE_TO_BAR, labelPaint);
+
+			// amount
+			canvas.drawText(String.valueOf(barItem.getAmount()), pointerInWidth
+					- halfWidthOfBar, top - AMOUNT_LABEL_SPACE_TO_BAR,
+					labelPaint);
+
+			// set pointer one bar up
 			pointerInWidth += space;
 
 			if (counter == 4)
 				break;
 			counter++;
 		}
-		
-		//draw rest of the drinks
+
+		// draw rest of the drinks
 		float sumAmountOfRest = 0;
 		for (int i = 5; i < barItems.size(); i++) {
 			BarItem barItem = barItems.get(i);
 			sumAmountOfRest += barItem.getAmount();
 		}
-		
-		if(sumAmountOfRest != 0) {
+
+		if (sumAmountOfRest != 0) {
 			float heightOfBar = sumAmountOfRest * heightOfOneDrink;
-			
+
 			float left = pointerInWidth - widthOfBar;
-			float top = stopY-heightOfBar;
+			float top = stopY - heightOfBar;
 			float right = pointerInWidth;
 			float bottom = stopY;
+
+			canvas.drawRect(left, top, right, bottom, barPaints[5]);
 			
-			canvas.drawRect(left, top, right, bottom, barPaints[5]);			
-			canvas.drawText("Others", pointerInWidth - halfWidthOfBar, stopY + NAME_LABEL_SPACE_TO_BAR, labelPaint);
+			//name
+			canvas.save();
 			
-			//amount
-			canvas.drawText(String.valueOf((int)sumAmountOfRest), pointerInWidth - halfWidthOfBar, 
-					top - AMOUNT_LABEL_SPACE_TO_BAR, labelPaint);
+			float tempX = pointerInWidth - halfWidthOfBar;
+			float tempY = stopY + NAME_LABEL_SPACE_TO_BAR;
+			canvas.translate(tempX, tempY);
+			StaticLayout layout = new StaticLayout("Others", new TextPaint(labelPaint), (int)space-2,
+					android.text.Layout.Alignment.ALIGN_NORMAL, 1.0f,
+					0f, true);
+	
+			layout.draw(canvas);
+			canvas.restore();
+			
+//			canvas.drawText("Others", pointerInWidth - halfWidthOfBar, stopY
+//					+ NAME_LABEL_SPACE_TO_BAR, labelPaint);
+
+			// amount
+			canvas.drawText(String.valueOf((int) sumAmountOfRest),
+					pointerInWidth - halfWidthOfBar, top
+							- AMOUNT_LABEL_SPACE_TO_BAR, labelPaint);
 		}
 	}
 
@@ -215,13 +248,14 @@ public class BarChartView extends View {
 				+ " - " + stopX + "/" + stopY);
 		canvas.drawLine(startXVertical, startYVertical, stopX, stopY
 				+ STROKE_WIDTH / 2f, strokePaint);
-		
-		//draw y label
-		 canvas.translate(stopX - Y_LABEL_SPACE_TO_LINE, (stopY - startYVertical)/2 + startYVertical);
+
+		// draw y label
+		canvas.translate(stopX - Y_LABEL_SPACE_TO_LINE,
+				(stopY - startYVertical) / 2 + startYVertical);
 		canvas.rotate(-90);
-		canvas.drawText("Menge", 0, 0,labelPaint);
+		canvas.drawText("Menge", 0, 0, labelPaint);
 		canvas.restore();
-		
+
 		drawBars(canvas, width, height, stopX, stopY, lineWidth, lineHeight);
 	}
 }
