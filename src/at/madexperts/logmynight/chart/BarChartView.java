@@ -7,7 +7,11 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PathEffect;
+import android.graphics.Paint.Style;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
@@ -140,6 +144,7 @@ public class BarChartView extends View {
 			float top = stopY - heightOfBar;
 			float right = pointerInWidth;
 			float bottom = stopY;
+			final int mainColor = barPaints[counter].getColor();
 
 			Log.d(TAG, "amount: " + amount + "left: " + left + " top: " + top
 					+ " right: " + right + "bottom: " + bottom);
@@ -147,6 +152,33 @@ public class BarChartView extends View {
 			// left <= right and top <= bottom
 
 			canvas.drawRect(left, top, right, bottom, barPaints[counter]);
+			
+			Path topPath = new Path();
+			topPath.moveTo(left, top);
+			topPath.lineTo(left+10, top-10);
+			topPath.lineTo(right+10, top-10);
+			topPath.lineTo(right, top);
+			Paint topPaint = new Paint();
+			topPaint.setStyle(Style.FILL_AND_STROKE);
+			topPaint.setColor(lighten(mainColor, 0.875f));
+			canvas.drawPath(topPath, topPaint);
+			
+			Path sidePath = new Path(); 
+			sidePath.moveTo(right, top);
+			sidePath.lineTo(right+10, top-10);
+			sidePath.lineTo(right+10, bottom-10);
+			sidePath.lineTo(right, bottom);
+			
+			Paint sidePaint = new Paint();
+			sidePaint.setStyle(Style.FILL_AND_STROKE);
+			sidePaint.setColor(lighten(mainColor, 0.75f));
+			canvas.drawPath(sidePath, sidePaint);
+			
+			/*
+			Paint linePaint = new Paint();
+			linePaint.setColor(Color.WHITE);
+			canvas.drawLine(right, top, right+10, top-10, linePaint);
+			*/
 
 			// name
 			canvas.save();
@@ -215,6 +247,13 @@ public class BarChartView extends View {
 					pointerInWidth - halfWidthOfBar, top
 							- AMOUNT_LABEL_SPACE_TO_BAR, labelPaint);
 		}
+	}
+	
+	private int lighten(int color, float newLightValue) {
+		float[] hsv = new float[3];
+		Color.colorToHSV(color, hsv);
+		hsv[2] = newLightValue;
+		return Color.HSVToColor(hsv);
 	}
 
 	@Override
