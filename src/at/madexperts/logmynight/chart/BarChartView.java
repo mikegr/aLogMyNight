@@ -153,27 +153,8 @@ public class BarChartView extends View {
 
 			canvas.drawRect(left, top, right, bottom, barPaints[counter]);
 			
-			Path topPath = new Path();
-			topPath.moveTo(left, top);
-			topPath.lineTo(left+10, top-10);
-			topPath.lineTo(right+10, top-10);
-			topPath.lineTo(right, top);
-			Paint topPaint = new Paint();
-			topPaint.setStyle(Style.FILL_AND_STROKE);
-			topPaint.setColor(lighten(mainColor, 0.875f));
-			canvas.drawPath(topPath, topPaint);
 			
-			Path sidePath = new Path(); 
-			sidePath.moveTo(right, top);
-			sidePath.lineTo(right+10, top-10);
-			sidePath.lineTo(right+10, bottom-10);
-			sidePath.lineTo(right, bottom);
-			
-			Paint sidePaint = new Paint();
-			sidePaint.setStyle(Style.FILL_AND_STROKE);
-			sidePaint.setColor(lighten(mainColor, 0.75f));
-			canvas.drawPath(sidePath, sidePaint);
-			
+			paint3d(left, top, right, bottom, mainColor, canvas);
 			/*
 			Paint linePaint = new Paint();
 			linePaint.setColor(Color.WHITE);
@@ -225,6 +206,7 @@ public class BarChartView extends View {
 			float bottom = stopY;
 
 			canvas.drawRect(left, top, right, bottom, barPaints[5]);
+			paint3d(left, top, right, bottom, barPaints[5].getColor(), canvas);
 			
 			//name
 			canvas.save();
@@ -248,6 +230,32 @@ public class BarChartView extends View {
 							- AMOUNT_LABEL_SPACE_TO_BAR, labelPaint);
 		}
 	}
+
+	
+	private void paint3d(float left, float top, float right, float bottom, int mainColor, Canvas canvas) {
+		Path topPath = new Path();
+		topPath.moveTo(left, top);
+		topPath.lineTo(left+10, top-10);
+		topPath.lineTo(right+10, top-10);
+		topPath.lineTo(right, top);
+		Paint topPaint = new Paint();
+		topPaint.setStyle(Style.FILL_AND_STROKE);
+		topPaint.setColor(lighten(mainColor, 0.875f));
+		canvas.drawPath(topPath, topPaint);
+		
+		Path sidePath = new Path(); 
+		sidePath.moveTo(right, top);
+		sidePath.lineTo(right+10, top-10);
+		sidePath.lineTo(right+10, bottom-10);
+		sidePath.lineTo(right, bottom);
+		
+		Paint sidePaint = new Paint();
+		sidePaint.setStyle(Style.FILL_AND_STROKE);
+		sidePaint.setColor(lighten(mainColor, 0.75f));
+		canvas.drawPath(sidePath, sidePaint);
+
+	} 
+	
 	
 	private int lighten(int color, float newLightValue) {
 		float[] hsv = new float[3];
