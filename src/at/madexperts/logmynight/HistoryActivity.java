@@ -58,12 +58,13 @@ public class HistoryActivity extends Activity implements OnClickListener,
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		db = new DatabaseHelper(this).getReadableDatabase();
-		
-		/* First, get the Display from the WindowManager */  
-		Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();  
-		
-		/* Now we can retrieve all display-related infos */  
-		int orientation = display.getOrientation();  
+
+		/* First, get the Display from the WindowManager */
+		Display display = ((WindowManager) getSystemService(WINDOW_SERVICE))
+				.getDefaultDisplay();
+
+		/* Now we can retrieve all display-related infos */
+		int orientation = display.getOrientation();
 		Log.d(TAG, "Orientation: " + orientation);
 
 		if (orientation == 0) {
@@ -80,20 +81,27 @@ public class HistoryActivity extends Activity implements OnClickListener,
 			button = (Button) findViewById(R.id.historyTimeButton);
 			button.setOnClickListener(this);
 			showHistory(1);
-		} else {
+		} else {			
 			setContentView(R.layout.barchart);
-			barChartData = (List<BarItem>)getLastNonConfigurationInstance();
+			
+			days = (Integer) getLastNonConfigurationInstance();
+			if(days == null)
+				days = 1;
+			
+			createBarChartDataList(days);
 			barChartView = (BarChartView) findViewById(R.id.barChartView);
 			barChartView.setData(barChartData);
 		}
 	}
+	
+	Integer days;
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
 		Log.d(TAG, "onRetainNonConfigurationInstance");
-		return barChartData;
+		return days;
 	}
-	
+
 	public void onConfigurationChanged(Configuration configuration) {
 		super.onConfigurationChanged(configuration);
 		Log.d(TAG, "onConfigurationChanged");
@@ -144,7 +152,60 @@ public class HistoryActivity extends Activity implements OnClickListener,
 		showHistory(365);
 	}
 
+	private List<BarItem> barChartData;
+
+	private void createBarChartDataList(int days) {
+		/*******************************************************************************
+		 * create list for chart view
+		 */
+		barChartData = new ArrayList<BarItem>();
+
+		Cursor cursor2 = db
+				.rawQuery(
+						"SELECT d._id as _id, d.name as name, COUNT(l._id) as counter, SUM(l.price) as itemsum "
+								+ "FROM drinks d JOIN drinklog l ON d._id = l.drink_id "
+								+ "WHERE l.log_time >= datetime('now', '-"
+								+ days + " day') " + "GROUP BY d._id, d.name",
+						null);
+
+		/* Get the indices of the Columns we will need */
+		int nameColumn = cursor2.getColumnIndex("name");
+		int amountColumn = cursor2.getColumnIndex("counter");
+
+		/* Check if our result was valid. */
+		if (cursor2 != null) {
+			/* Check if at least one Result was returned. */
+			if (cursor2.moveToFirst()) {
+				int i = 0;
+				/* Loop through all Results */
+				do {
+					i++;
+					/*
+					 * Retrieve the values of the Entry the Cursor is pointing
+					 * to.
+					 */
+					String name = cursor2.getString(nameColumn);
+					int amount = cursor2.getInt(amountColumn);
+
+					/*
+					 * We can also receive the Name of a Column by its Index.
+					 * Makes no sense, as we already know the Name, but just to
+					 * shwo we can Wink String ageColumName =
+					 * c.getColumnName(ageColumn);
+					 */
+
+					/* Add current Entry to results. */
+					barChartData.add(new BarItem(name, amount));
+				} while (cursor2.moveToNext());
+			}
+
+			cursor2.close();
+		}
+	}
+
 	private void showHistory(int days) {
+		this.days = days;
+		
 		// SELECT d._id, d.name as name, COUNT(l._id) as counter, SUM(l.price)
 		// as itemsum FROM drinks d JOIN drinklog l ON d._id = l.drink_id WHERE
 		// l.log_time >= datetime('now', '-2 day') GROUP BY d._id, d.name;
@@ -166,7 +227,7 @@ public class HistoryActivity extends Activity implements OnClickListener,
 								+ "FROM drinks d JOIN drinklog l ON d._id = l.drink_id "
 								+ "WHERE l.log_time >= datetime('now', '-"
 								+ days + " day') ", null); // new String[]
-															// {Integer.toString(days)});
+		// {Integer.toString(days)});
 
 		SimpleCursorAdapter sumAdapter = new SimpleCursorAdapter(this,
 				R.layout.historyrow, sumCursor, new String[] { "name",
@@ -174,55 +235,9 @@ public class HistoryActivity extends Activity implements OnClickListener,
 						R.id.historyRowName, R.id.historyRowAmount,
 						R.id.historyRowSum });
 		sumView.setAdapter(sumAdapter);
-		
+
 		listView.setAdapter(adapter);
-		
-		/*******************************************************************************
-		 * create list for chart view
-		 */
-		barChartData = new ArrayList<BarItem>();
-		
-		Cursor cursor2 = db
-		.rawQuery(
-				"SELECT d._id as _id, d.name as name, COUNT(l._id) as counter, SUM(l.price) as itemsum "
-						+ "FROM drinks d JOIN drinklog l ON d._id = l.drink_id "
-						+ "WHERE l.log_time >= datetime('now', '-"
-						+ days + " day') " + "GROUP BY d._id, d.name",
-				null);
-		
-		 /* Get the indices of the Columns we will need */
-        int nameColumn = cursor2.getColumnIndex("name");
-        int amountColumn = cursor2.getColumnIndex("counter");
-        
-        /* Check if our result was valid. */
-        if (cursor2 != null) {
-             /* Check if at least one Result was returned. */
-             if (cursor2.moveToFirst()) {
-                  int i = 0;
-                  /* Loop through all Results */
-                  do {
-                       i++;
-                       /* Retrieve the values of the Entry
-                        * the Cursor is pointing to. */
-                       String name = cursor2.getString(nameColumn);
-                       int amount = cursor2.getInt(amountColumn);
-                       
-                       /* We can also receive the Name
-                        * of a Column by its Index.
-                        * Makes no sense, as we already
-                        * know the Name, but just to shwo we can Wink
-                       String ageColumName = c.getColumnName(ageColumn); */
-                       
-                       /* Add current Entry to results. */
-                       barChartData.add(new BarItem(name, amount));
-                  } while (cursor2.moveToNext());
-             }
-             
-             cursor2.close();
-        }
 	}
-	
-	private List<BarItem> barChartData;
 
 	@Override
 	protected void onDestroy() {
