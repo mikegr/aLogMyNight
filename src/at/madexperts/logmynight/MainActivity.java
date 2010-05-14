@@ -17,10 +17,13 @@
 */
 package at.madexperts.logmynight;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import android.app.Dialog;
@@ -30,10 +33,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,11 +50,9 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import static java.lang.Math.*;
 
 public class MainActivity extends ListActivity
 {
@@ -61,6 +62,7 @@ public class MainActivity extends ListActivity
 	
 	SQLiteDatabase db;
 	AutoCompleteTextView auto;
+	LocationHelper locationHelper;
 	
     /** Called when the activity is first created. */
     @Override
@@ -68,6 +70,8 @@ public class MainActivity extends ListActivity
     {
         super.onCreate(savedInstanceState);
         db = new DatabaseHelper(this).getWritableDatabase();
+        locationHelper = new LocationHelper(this, db);
+        
         setContentView(R.layout.main);
         
         DatabaseHelper.debug(db, "drinks");
@@ -96,7 +100,7 @@ public class MainActivity extends ListActivity
 				Log.d(TAG, "ENTER: " + KeyEvent.KEYCODE_ENTER);
 				
 				updateLocationAdapter();
-				Location location = getLocation();
+				Location location = locationHelper.getLocation();
 				double tmplat = 0;
 				double tmplon = 0;
 				if (location != null) {
@@ -153,71 +157,46 @@ public class MainActivity extends ListActivity
 		});
         
         updateList();
+        registerLocationChange();
     }
     
-    private Location getLocation() {
-		LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+    
+    
+    private void registerLocationChange() {
+    	final LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+    	String provider = locationHelper.getBestProvider(lm);
+    	Log.d(TAG, "Request update from location provider: " + provider);
+    	lm.requestLocationUpdates(provider, 5*60*1000, 50, new LocationListener() {
+			
+			public void onStatusChanged(String provider, int status, Bundle extras) {
+				
+			}
+			
+			public void onProviderEnabled(String provider) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void onProviderDisabled(String provider) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void onLocationChanged(Location location) {
+				Log.d(TAG, "Location changed");
+				String nearestLocation = locationHelper.getNearestLocation(location);
+				Log.d(TAG, "Found closed location: " + nearestLocation);
+				auto.setText(nearestLocation);
+			}
+		});
 		
-		List<String> provs = lm.getAllProviders();
-		for (String prov : provs) {
-			Log.d(TAG, "Provider: " + prov);
-		}
-		Criteria c = new Criteria();
-		c.setAccuracy(Criteria.ACCURACY_COARSE);
-		c.setAltitudeRequired(false);
-		c.setBearingRequired(false);
-		c.setCostAllowed(false);
-		c.setPowerRequirement(Criteria.NO_REQUIREMENT);
-		c.setSpeedRequired(false);
-		String provider = lm.getBestProvider(c, true);
-		Log.d(TAG, "Used provider: " + provider);
-		return lm.getLastKnownLocation(provider);
-    }
-    
+	}
+
 
     private void updateLocationAdapter() {
-		Location location = getLocation();
-		Log.d(TAG, "Got location" + location);
-		auto.setAdapter(getSortedNameAdapter(location));
+		auto.setAdapter(locationHelper.getSortedNameAdapter());
     }
-    private ArrayAdapter<String> getSortedNameAdapter(Location location) {
-    	double latNow = 0.0;
-    	double lonNow = 0.0;
-    	if (location != null) {
-    		latNow = location.getLatitude() + 90.0;
-    		lonNow = location.getLongitude() + 180.0;
-    	}
-    	
-		Cursor c = db.rawQuery("SELECT _id, name, longitude, latitude FROM location", null);
-		TreeMap<Double, List<String>> map = new TreeMap<Double, List<String>>();
-		while (c.moveToNext()) {
-			double latRow = c.getDouble(c.getColumnIndex("longitude")) + 90.0;
-			double lonRow = c.getDouble(c.getColumnIndex("latitude")) + 180.0;
-			String name = c.getString(c.getColumnIndex("name"));
-			double distance = euklidDistance(latNow, lonNow, latRow, lonRow);
-			List<String> list = map.get(distance);
-			if (list == null) {
-				list = new ArrayList<String>();
-				map.put(distance, list);
-			}
-			list.add(name);
-			Log.d(TAG, name + " has distance of " + distance);
-		}
-		ArrayList<String> values = new ArrayList<String>();
-		for (List<String> list: map.values()) {
-			for(String value:list) {
-				values.add(value);
-				Log.d(TAG, "Sorted:" + value);
-			}
-		}
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, values);
-    	return adapter;
-    	
-    }
-    
-    private double euklidDistance(double x1, double y1, double x2, double y2) {
-    	return sqrt( pow(abs(x1 - x2),2) * pow(abs(y1 - y2),2) );
-    }
+
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -333,7 +312,7 @@ public class MainActivity extends ListActivity
         	@Override
         	public long getItemId(int position) {
         		long value = super.getItemId(position);
-        		Log.d(TAG, "value=" + value);
+        		Log.d(TAG, "itemId=" + value);
         		return value; 
         	}
         };

@@ -1,3 +1,7 @@
 Datebase is in /data/data/at.madexperts.logmynight/databases/LogMyNight
 To query database use 
 # sqlite3 /data/data/at.madexperts.logmynight/databases/LogMyNight
+
+to set location:
+#telnet localhost 5554
+#geo fix 10 10
