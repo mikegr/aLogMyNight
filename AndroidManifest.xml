@@ -29,11 +29,11 @@
                   android:label="@string/app_name">
         </activity>
         <activity android:name=".HistoryActivity"
-                  android:label="History" 
+                  android:label="Rechnung" 
                   >
         </activity>
         <activity android:name=".GalleryActivity"
-                  android:label="Gallery">
+                  android:label="Aufrisse">
                             
                   
         </activity>
