@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="drinkName" parent="@android:style/TextAppearance.Large">		
+		<item name="android:textColor">#EDDA74</item>		
+		<item name="android:layout_marginLeft">15dip</item>		
+		<item name="android:textStyle">normal</item>
+	</style>
+	
+	<style name="drinkCounter" parent="@android:style/TextAppearance.Small">
+		<item name="android:layout_marginTop">7dip</item>
+		<item name="android:layout_marginBottom">-7dip</item>
+		<item name="android:layout_marginLeft">15dip</item>
+		<item name="android:textStyle">normal</item>
+		<item name="android:textSize">11sp</item>
+	</style>
+
+</resources>
