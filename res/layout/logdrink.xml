@@ -1,32 +1,99 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/TableLayout01" 
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent" 
-	>
+	android:orientation="vertical"
+	android:background="@drawable/entry">
 <TextView 
 	android:text="" 
 	android:id="@+id/log_drink"
 	android:layout_alignParentTop="true" 
-	android:layout_width="wrap_content" 
+	android:layout_width="fill_parent" 
 	android:layout_height="wrap_content"
-	android:layout_centerHorizontal="true"
+	android:gravity="center_horizontal"
 	android:textSize="30dip"
-	android:textStyle="bold"
+	android:textStyle="normal"
+	android:textColor="#EDDA74"
+	android:layout_marginTop="5dip"
 	>
 </TextView>
-<ImageView 
-	android:id="@+id/drinkImageView"
-	android:src="@drawable/beer" 
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent"
-	android:layout_above="@+id/linearLayout"
-	android:layout_below="@+id/log_drink"
-	android:layout_weight="1"
-	>
-	<!--
-	android:scaleType="fitXY" 
-	android:scaleType="centerInside"  -->
-</ImageView>
+
+<LinearLayout
+	android:orientation="horizontal"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content">
+	<ImageView 
+		android:id="@+id/drinkImageView"
+		android:src="@drawable/beer" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_above="@+id/linearLayout"
+		android:layout_below="@+id/log_drink"
+		android:layout_weight="1"
+		>
+		<!--
+		android:scaleType="fitXY" 
+		android:scaleType="centerInside"  -->
+	</ImageView>
+
+	<LinearLayout
+		android:id="@+id/amountView"
+		android:orientation="vertical"
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent"
+		android:layout_toRightOf="@+id/drinkImageView"
+		android:gravity="center_vertical"
+		>
+		<TextView 
+			android:text="Menge" 
+			android:id="@+id/countTextView" 
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:gravity="center_horizontal"
+			android:textSize="20sp"
+			android:textColor="#FFFFFF">
+		</TextView>
+		<TextView 
+			android:text="1" 
+			android:id="@+id/countEditText"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:gravity="center_horizontal"
+			android:textSize="20sp"
+			android:layout_marginTop="5dip"
+			android:textColor="#FFFFFF">
+		</TextView>
+	</LinearLayout>
+	<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent"
+			android:layout_toRightOf="@+id/amountView"
+			android:gravity="center_vertical"
+			android:layout_marginLeft="5dip"
+			>
+			<Button
+				android:id="@+id/upButton" 
+				android:layout_width="50dip" 
+				android:layout_height="50dip"
+				android:text="+"
+				android:textStyle="bold"
+				android:textColor="#373737"
+				android:textSize="25sp"
+			>
+			</Button>
+			<Button
+				android:id="@+id/downButton"
+				android:text="-" 
+				android:textSize="25sp"
+				android:textStyle="bold"
+				android:textColor="#373737"
+				android:layout_width="50dip" 
+				android:layout_height="50dip"
+				>
+			</Button>
+	</LinearLayout>
+</LinearLayout>
 
 <LinearLayout
 	android:id="@+id/linearLayout"
@@ -34,6 +101,7 @@
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:gravity="center_horizontal"
+	android:layout_marginTop="20dip"
 	>
 	<LinearLayout 
 		android:layout_width="wrap_content" 
@@ -41,7 +109,7 @@
 		android:layout_gravity="center_vertical"
 	>
 	<TextView 
-		android:text="Price:" 
+		android:text="Preis pro Drink: " 
 		android:id="@+id/priceTextVie" 
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content"
@@ -55,39 +123,6 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content">
 	</EditText>
-	<TextView 
-		android:text="€x" 
-		android:id="@+id/countTextView" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content">
-	</TextView>
-	<EditText 
-		android:text="1" 
-		android:id="@+id/countEditText"
-		android:inputType="number"
-		android:ems="2" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content">
-	</EditText>
-	</LinearLayout>
-	<LinearLayout
-		android:orientation="vertical"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		>
-		<Button
-			android:id="@+id/upButton" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content"
-			android:text="Up"
-		>
-		</Button>
-		<Button
-			android:id="@+id/downButton"
-			android:text="Down" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content">
-		</Button>
 	</LinearLayout>
 </LinearLayout>
 
@@ -103,12 +138,15 @@
 </SeekBar>
 <Button 
 	android:id="@+id/logButton"
-	android:text="Log my drink!"  
-	android:layout_width="wrap_content" 
-	android:layout_height="wrap_content"
-	android:gravity="center_vertical"
+	android:text="Log my drink" 
+	android:textStyle="normal" 
+	android:textColor="#FFFFFF"
+	android:textSize="18sp"
+	android:layout_width="fill_parent" 
+	android:layout_height="65dip"
+	android:layout_marginTop="20dip"
 	android:layout_alignParentBottom="true"
-	android:layout_centerHorizontal="true"
+	android:background="@drawable/logbutton"
 	>
 </Button>
-</RelativeLayout>
+</LinearLayout>

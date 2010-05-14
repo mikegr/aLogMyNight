@@ -39,7 +39,7 @@ public class LogActivity extends Activity implements OnClickListener{
 	private int drink;
 	
 	private EditText price;
-	private EditText times;
+	private TextView times;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +64,7 @@ public class LogActivity extends Activity implements OnClickListener{
 		price = (EditText) findViewById(R.id.priceEditText);
 		price.setText(Integer.toString(priceValue/100));
 		
-		times = (EditText) findViewById(R.id.countEditText);
+		times = (TextView) findViewById(R.id.countEditText);
 		((Button) findViewById(R.id.upButton)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				String t = times.getText().toString();
