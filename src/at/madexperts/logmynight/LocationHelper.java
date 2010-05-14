@@ -57,6 +57,11 @@ public class LocationHelper {
     	return map;
     }
     
+    public String getNearestLocation() {
+    	Location now = getLocation();
+    	return getNearestLocation(now);
+    }
+    
     public String getNearestLocation(Location now) {
     	SortedMap<Double, List<String>> map = getSortedLocations(now);
     	List<String> list = map.get(map.firstKey());

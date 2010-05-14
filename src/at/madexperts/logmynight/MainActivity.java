@@ -77,18 +77,27 @@ public class MainActivity extends ListActivity
         DatabaseHelper.debug(db, "drinks");
         DatabaseHelper.debug(db, "drinklog");
         
+        setUpLocation();
+        
+        updateList();
+    }
+    
+    
+    private void setUpLocation() {
         auto = (AutoCompleteTextView) findViewById(R.id.mainLocationAutoCompleteTextView);
         auto.setThreshold(0);
         auto.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 			
 			public void onFocusChange(View v, boolean hasFocus) {
 				Log.d(TAG, "onFocusChange");
-				if (hasFocus) {
-					updateLocationAdapter();
-				}
+				updateLocationAdapter();
 			}
 		});
-        //auto.setAdapter(adapter)
+        
+        //Set to current location
+        String location = locationHelper.getNearestLocation();
+        auto.setText(location);
+        updateCurrentLocation(getLocationId(location));
         
         auto.setOnEditorActionListener(new AutoCompleteTextView.OnEditorActionListener() {
 			
@@ -155,11 +164,8 @@ public class MainActivity extends ListActivity
 				return false;
 			}
 		});
-        
-        updateList();
         registerLocationChange();
     }
-    
     
     
     private void registerLocationChange() {
