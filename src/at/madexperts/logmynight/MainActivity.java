@@ -95,9 +95,9 @@ public class MainActivity extends ListActivity
 		});
         
         //Set to current location
-        String location = locationHelper.getNearestLocation();
-        auto.setText(location);
-        updateCurrentLocation(getLocationId(location));
+        updateLocationViewAndSettings();
+        
+        
         
         auto.setOnEditorActionListener(new AutoCompleteTextView.OnEditorActionListener() {
 			
@@ -168,7 +168,19 @@ public class MainActivity extends ListActivity
     }
     
     
-    private void registerLocationChange() {
+    private void updateLocationViewAndSettings() {
+    	updateLocationViewAndSettings(locationHelper.getLocation());
+    }
+    private void updateLocationViewAndSettings(Location loc) {
+		Log.d(TAG, "setting location");
+		String location = locationHelper.getNearestLocation(loc);
+		Log.d(TAG, "Found closed location: " + location);
+        auto.setText(location);
+        updateCurrentLocation(getLocationId(location));
+	}
+
+
+	private void registerLocationChange() {
     	final LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
     	String provider = locationHelper.getBestProvider(lm);
     	Log.d(TAG, "Request update from location provider: " + provider);
@@ -189,10 +201,7 @@ public class MainActivity extends ListActivity
 			}
 			
 			public void onLocationChanged(Location location) {
-				Log.d(TAG, "Location changed");
-				String nearestLocation = locationHelper.getNearestLocation(location);
-				Log.d(TAG, "Found closed location: " + nearestLocation);
-				auto.setText(nearestLocation);
+				updateLocationViewAndSettings(location);
 			}
 		});
 		

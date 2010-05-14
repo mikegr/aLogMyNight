@@ -61,7 +61,11 @@ public class LocationHelper {
     	Location now = getLocation();
     	return getNearestLocation(now);
     }
-    
+    /**
+     * Returns name of nearest location
+     * @param now location for calculation distance to 
+     * @return
+     */
     public String getNearestLocation(Location now) {
     	SortedMap<Double, List<String>> map = getSortedLocations(now);
     	List<String> list = map.get(map.firstKey());
@@ -107,6 +111,10 @@ public class LocationHelper {
     }
 	
 
+    /**
+     * Returns last know location with best provider 
+     * @return
+     */
 	public Location getLocation() {
 		LocationManager lm = (LocationManager) ctx.getSystemService(ctx.LOCATION_SERVICE);
 		String provider = getBestProvider(lm);
