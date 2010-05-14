@@ -17,7 +17,7 @@
 		android:layout_height="wrap_content">
 	</ListView>
 	<Button 
-		android:text="Change Time" 
+		android:text="Zeitraum ändern" 
 		android:id="@+id/historyTimeButton" 
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content"

@@ -14,6 +14,7 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -106,11 +107,14 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,
 
 	public void onPictureTaken(final byte[] data, Camera camera) {
 		Log.d(TAG, "onPictureTaken() started ");
-		// Matrix m = new Matrix();
-		// m.postRotate(90);
-		// Bitmap nb = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(),
-		// m, true);
-		//DateFormat df = new DateFormat();
+		
+		/* First, get the Display from the WindowManager */
+		Display display = ((WindowManager) getSystemService(WINDOW_SERVICE))
+				.getDefaultDisplay();
+
+		/* Now we can retrieve all display-related infos */
+		final int orientation = display.getOrientation();
+		Log.d(TAG, "Orientation: " + orientation);
 
 		final Dialog dlg = new Dialog(this);
 		View view = getLayoutInflater().inflate(R.layout.cameradialog, null);
@@ -118,29 +122,19 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,
 		final EditText edit = (EditText) view.findViewById(R.id.cameraDialogEditText);
 		okButton.setOnClickListener(new View.OnClickListener() {
 			
-			public void onClick(View v) {
+			public void onClick(View v) {		
 				dlg.dismiss();
 				String name = edit.getText().toString();
 				Log.d(TAG, "Entered name: " + name);
 				String filename = DateFormat.format("yyyyMMdd-kkmmss", new Date()) + ".jpg";
 				new SavePhotoAsyncTask(filename).execute(data);
-				db.execSQL("INSERT INTO pics (name, filename) VALUES (?,?)", new String[] {name, filename});
-				finish();
-				
-				
+				db.execSQL("INSERT INTO pics (name, filename, orientation) VALUES (?,?,?)", new String[] {name, filename, String.valueOf(orientation)});
+				finish();		
 			}
 		});
 		dlg.setContentView(view);
 		dlg.setTitle("Enter name:");
 		dlg.show();
-
-		
-		/*
-		Intent i = new Intent(this, PhotoEditActivity.class);
-		i.putExtra("data", file_name);
-		this.finish();
-		startActivity(i);
-		*/
 	
 		Log.d(TAG, "onPictureTaken() finished");
 	}

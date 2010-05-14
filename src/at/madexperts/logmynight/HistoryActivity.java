@@ -71,10 +71,10 @@ public class HistoryActivity extends Activity implements OnClickListener,
 			setContentView(R.layout.history);
 			listView = (ListView) findViewById(R.id.historyListView);
 			View view = getLayoutInflater().inflate(R.layout.historyrow, null);
-			((TextView) view.findViewById(R.id.historyRowName)).setText("Item");
-			((TextView) view.findViewById(R.id.historyRowSum)).setText("Sum");
+			((TextView) view.findViewById(R.id.historyRowName)).setText("Drink");
+			((TextView) view.findViewById(R.id.historyRowSum)).setText("Summe");
 			((TextView) view.findViewById(R.id.historyRowAmount))
-					.setText("Amount");
+					.setText("Menge");
 			listView.addHeaderView(view);
 
 			sumView = (ListView) findViewById(R.id.historySum);
@@ -113,15 +113,15 @@ public class HistoryActivity extends Activity implements OnClickListener,
 	public void onClick(View v) {
 		Log.d(TAG, "onClick from ID: " + v.getId());
 		ArrayAdapter<String> a = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, new String[] { "last 24h",
-						"last week", "last month", "all" });
+				android.R.layout.simple_list_item_1, new String[] { "letzten 24h",
+						"letzte Woche", "letzter Monat", "Alle" });
 		timeView = new ListView(this);
 		timeView.setAdapter(a);
 		timeView.setOnItemClickListener(this);
 		dlg = new Dialog(this);
 		dlg.setContentView(timeView);
 
-		dlg.setTitle("Select time range");
+		dlg.setTitle("Zeitraum ändern");
 		dlg.show();
 	}
 

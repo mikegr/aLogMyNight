@@ -28,14 +28,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = DatabaseHelper.class.getName();
 	public DatabaseHelper(Context ctx) {
-		super(ctx, "LogMyNight", null, 5);
+		super(ctx, "LogMyNight", null, 6);
 	}
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		Log.v(TAG, "Creating database");
 		db.execSQL("CREATE TABLE drinks (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, category INTEGER, lastPrice INTEGER, alcohol INTEGER, volume INTEGER)");
 		db.execSQL("CREATE TABLE drinklog (_id INTEGER PRIMARY KEY AUTOINCREMENT, drink_id INTEGER, location_id INTEGER, price INTEGER, log_time TEXT, FOREIGN KEY(drink_id) REFERENCES drinks(_id), FOREIGN KEY(location_id) REFERENCES location(_id))");
-		db.execSQL("CREATE TABLE pics (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, creation TEXT, filename TEXT)");
+		db.execSQL("CREATE TABLE pics (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, creation TEXT, filename TEXT, orientation INTEGER)");
 		db.execSQL("CREATE TABLE location (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, longitude FLOAT, latitude FLOAT)");
 		addTestdata(db);
 	}
