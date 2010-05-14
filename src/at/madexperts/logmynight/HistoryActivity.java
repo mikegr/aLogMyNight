@@ -17,6 +17,7 @@
  */
 package at.madexperts.logmynight;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -280,7 +281,18 @@ public class HistoryActivity extends Activity implements OnClickListener,
 				R.layout.historysum, sumCursor, new String[] { "name",
 						"counter", "itemsum" }, new int[] {
 						R.id.historyRowName, R.id.historyRowAmount,
-						R.id.historyRowSum });
+						R.id.historyRowSum }) {
+			NumberFormat format = NumberFormat.getNumberInstance();
+			@Override
+			public View getView(int position, View convertView,
+					ViewGroup parent) {
+				View view = super.getView(position, convertView, parent);
+				TextView text = (TextView) view.findViewById(R.id.historyRowSum);
+				Cursor c = getCursor();
+				text.setText(format.format(c.getInt(c.getColumnIndex("itemsum"))/100d));
+				return view;
+			}
+		};
 		sumView.setAdapter(sumAdapter);
 
 		listView.setAdapter(new ImageAdapter(this, cursor));
@@ -288,12 +300,15 @@ public class HistoryActivity extends Activity implements OnClickListener,
 
 	class ImageAdapter extends SimpleCursorAdapter {
 		private String header;
+		private NumberFormat format;
 
 		public ImageAdapter(Context ctx, Cursor cursor) {
 			super(ctx, R.layout.historyrow, cursor, new String[] { "category", "name",
 					"counter", "itemsum" }, new int[] { R.id.historyRowImage,
 					R.id.historyRowName, R.id.historyRowAmount,
 					R.id.historyRowSum });
+			format = NumberFormat.getNumberInstance();
+			format.setMinimumFractionDigits(2);
 		}
 
 		/*
@@ -313,6 +328,17 @@ public class HistoryActivity extends Activity implements OnClickListener,
 			Cursor cursor = getCursor();
 			int category = cursor.getInt(cursor.getColumnIndex("category"));
 			imageView.setImageResource(Utilities.getIcon(category));
+			
+			TextView text = (TextView) view.findViewById(R.id.historyRowSum);
+			text.setText(format.format(cursor.getLong(cursor.getColumnIndex("itemsum"))/100d));
+			
+			/*
+			 * TextView sumText = (TextView) view.findViewById(R.id.historyRowSum);
+			 * sumText.setText(format.format(cursor.getLong(cursor.getColumnIndex("itemsum"))/100d));  
+			 */
+			
+			
+			
 			return view;
 		}
 
