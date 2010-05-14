@@ -20,14 +20,22 @@ package at.madexperts.logmynight;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.codecarpet.fbconnect.FBFeedActivity;
+
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
@@ -52,6 +60,9 @@ public class HistoryActivity extends Activity implements OnClickListener,
 	private Button button;
 
 	private BarChartView barChartView;
+	
+    private static final int MESSAGE_PUBLISHED = 2;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +77,7 @@ public class HistoryActivity extends Activity implements OnClickListener,
 		/* Now we can retrieve all display-related infos */
 		int orientation = display.getOrientation();
 		Log.d(TAG, "Orientation: " + orientation);
-
+		
 		if (orientation == 0) {
 			setContentView(R.layout.history);
 			listView = (ListView) findViewById(R.id.historyListView);
@@ -106,7 +117,29 @@ public class HistoryActivity extends Activity implements OnClickListener,
 		super.onConfigurationChanged(configuration);
 		Log.d(TAG, "onConfigurationChanged");
 	}
+	
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	new MenuInflater(this).inflate(R.menu.historymenu, menu);
+    	return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    		case R.id.shareMenuItem: 
+    			share("Message from Android!");
+    			return true;
+    	}
+    	// TODO Auto-generated method stub
+    	return super.onOptionsItemSelected(item);
+    }
 
+    private void share(String txt) {
+    	FacebookHelper h = new FacebookHelper(this);
+    	h.publish(txt);
+    }
+    
 	private Dialog dlg;
 	private ListView timeView;
 
