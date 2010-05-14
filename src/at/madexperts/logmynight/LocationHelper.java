@@ -68,6 +68,9 @@ public class LocationHelper {
      */
     public String getNearestLocation(Location now) {
     	SortedMap<Double, List<String>> map = getSortedLocations(now);
+    	if (map.isEmpty()) {
+    		return null;
+    	}
     	List<String> list = map.get(map.firstKey());
     	if (list == null || list.isEmpty()) {
     		return null;

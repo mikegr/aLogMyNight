@@ -174,9 +174,11 @@ public class MainActivity extends ListActivity
     private void updateLocationViewAndSettings(Location loc) {
 		Log.d(TAG, "setting location");
 		String location = locationHelper.getNearestLocation(loc);
-		Log.d(TAG, "Found closed location: " + location);
-        auto.setText(location);
-        updateCurrentLocation(getLocationId(location));
+		if (location != null) {
+			Log.d(TAG, "Found closed location: " + location);
+	        auto.setText(location);
+	        updateCurrentLocation(getLocationId(location));
+		}
 	}
 
 
