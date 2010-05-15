@@ -21,6 +21,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -55,7 +56,11 @@ public class LogActivity extends Activity implements OnClickListener{
 		c.moveToFirst();
 		
 		TextView nameView = (TextView) findViewById(R.id.log_drink);
-		nameView.setText(c.getString(c.getColumnIndexOrThrow("name")));
+		final Resources res = getResources();
+		final String nameKey = c.getString(c.getColumnIndexOrThrow("name"));
+		final int resId = res.getIdentifier(nameKey, "string", "at.madexperts.logmynight");
+		
+		nameView.setText(res.getText(resId, nameKey));
 		
 		ImageView imageView = (ImageView) findViewById(R.id.drinkImageView);
 		int category = c.getInt(c.getColumnIndex("category"));

@@ -28,7 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = DatabaseHelper.class.getName();
 	public DatabaseHelper(Context ctx) {
-		super(ctx, "LogMyNight", null, 6);
+		super(ctx, "LogMyNight", null, 9);
 	}
 	@Override
 	public void onCreate(SQLiteDatabase db) {
@@ -41,16 +41,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	private void addTestdata(SQLiteDatabase db) {
-		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('Halbe Bier', 1, 300, 5, 500)");
-		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('Seiderl Bier', 1, 250, 5, 350)");
-		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('Achterl Weiß', 2, 250, 10, 125)");
-		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('Achterl Rot', 2, 300, 12, 125)");
-		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('Prosecco', 2, 250, 10, 100)");
-		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('Tequilla Sunrise', 3, 700, 10, 250)");
+		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('beer_0_5', 1, 300, 5, 500)");
+		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('beer_0_3', 1, 250, 5, 350)");
+		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('white_wine_0_125', 2, 250, 10, 125)");
+		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('red_wine_0_125', 2, 300, 12, 125)");
+		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('Proseco', 2, 250, 10, 100)");
+		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('Tequila Sunrise', 3, 700, 10, 250)");
 		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('Mojito', 3, 700, 10, 250)");
 		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('Long Island Ice Tea', 3, 700, 15, 250)");
 		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('B52', 4, 700, 15, 250)");
-		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('Mineralwasser', 0,  700, 15, 250)");
+		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('tap_water_0_25', 0,  700, 15, 250)");
 		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('Red Bull', 0,  700, 15, 250)");
 		
 		//cats: 0= anti, 1=beer, 2=wein, 3=cocktail, 4=shot

@@ -2,4 +2,9 @@
 <resources>
     <string name="app_name">LogMyNight</string>
     <string name="share">Share</string>
+    <string name="beer_0_5">Pint of Beer</string>
+    <string name="beer_0_3">Small Beer</string>
+    <string name="white_wine_0_125">White Wine</string>
+    <string name="red_wine_0_125">Red Wine</string>
+    <string name="tap_water_0_25">Tap Water</string>
 </resources>
