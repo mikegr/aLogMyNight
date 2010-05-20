@@ -32,6 +32,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Criteria;
@@ -333,7 +334,6 @@ public class MainActivity extends ListActivity
         		return value; 
         	}
         };
-        
         adapter.addSection("Last", new GradientAdapter(this, "Last", lastCursor));
         adapter.addSection("Favourites", new GradientAdapter(this, "Favourites", favouriteCursor));
         adapter.addSection("All drinks", new GradientAdapter(this, "All drinks", allCursor));
@@ -366,23 +366,12 @@ public class MainActivity extends ListActivity
     }
     
     
-    class GradientAdapter extends SimpleCursorAdapter {
+    class GradientAdapter extends I18NSimpleCursorAdapter {
     	private String header;
     	public GradientAdapter(Context ctx, String header, Cursor cursor) {
-			super(ctx, R.layout.row, cursor, new String[] {"name", "counter", "category"}, new int[] {R.id.rowText, R.id.rowCounter, R.id.rowImage});
+			super(ctx, R.layout.row, cursor, new String[] {"name", "counter", "category"}, new int[] {R.id.rowText, R.id.rowCounter, R.id.rowImage}, new int[ ] {0});
 			this.header = header;
 		}
-    	
-    	/*
-    	@Override
-    	
-    	public void setViewImage(ImageView v, String value) {
-    		Log.d(TAG, "setImageView: " + value);
-    		super.setViewImage(v, getIcon(value));
-    	}
-    	*/
-    	
-    	
     	
     	@Override
     	public View getView(int position, View convertView, ViewGroup parent) {

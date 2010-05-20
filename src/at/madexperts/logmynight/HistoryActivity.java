@@ -277,11 +277,11 @@ public class HistoryActivity extends Activity implements OnClickListener,
 								+ days + " day') ", null); // new String[]
 		// {Integer.toString(days)});
 
-		SimpleCursorAdapter sumAdapter = new SimpleCursorAdapter(this,
+		SimpleCursorAdapter sumAdapter = new I18NSimpleCursorAdapter(this,
 				R.layout.historysum, sumCursor, new String[] { "name",
 						"counter", "itemsum" }, new int[] {
 						R.id.historyRowName, R.id.historyRowAmount,
-						R.id.historyRowSum }) {
+						R.id.historyRowSum }, new int[]{0}) {
 			NumberFormat format = NumberFormat.getNumberInstance();
 			@Override
 			public View getView(int position, View convertView,
@@ -298,7 +298,7 @@ public class HistoryActivity extends Activity implements OnClickListener,
 		listView.setAdapter(new ImageAdapter(this, cursor));
 	}
 
-	class ImageAdapter extends SimpleCursorAdapter {
+	class ImageAdapter extends I18NSimpleCursorAdapter {
 		private String header;
 		private NumberFormat format;
 
@@ -306,7 +306,7 @@ public class HistoryActivity extends Activity implements OnClickListener,
 			super(ctx, R.layout.historyrow, cursor, new String[] { "category", "name",
 					"counter", "itemsum" }, new int[] { R.id.historyRowImage,
 					R.id.historyRowName, R.id.historyRowAmount,
-					R.id.historyRowSum });
+					R.id.historyRowSum }, new int[] {1});
 			format = NumberFormat.getNumberInstance();
 			format.setMinimumFractionDigits(2);
 		}
