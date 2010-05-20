@@ -4,6 +4,7 @@
 		android:id="@+id/shareMenuItem" 
 		android:title="Share" 
 		android:visible="true" 
-		android:enabled="true">
+		android:enabled="true"
+		android:icon="@drawable/fb">
 	</item>
 </menu>
