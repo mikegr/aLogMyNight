@@ -1,6 +1,7 @@
 package at.madexperts.logmynight;
 
 import java.io.File;
+import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,7 +12,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +58,13 @@ public class GalleryActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		Intent intent = new Intent(this, CameraActivity.class);
 		startActivityForResult(intent, 0);
+	}
+
+	public Intent useCameraIntent() {
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		String filename = DateFormat.format("yyyyMMdd-kkmmss", new Date()) + ".jpg";
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(Utilities.getImageDirectory(), filename)));
+		return intent;
 	}
 
 	@Override
@@ -102,10 +113,13 @@ public class GalleryActivity extends Activity implements OnClickListener {
 			Cursor cursor = db.rawQuery(
 					"SELECT name, orientation FROM pics WHERE filename = ?",
 					new String[] { file.getName() });
-			cursor.moveToFirst();
-			String name = cursor.getString(cursor.getColumnIndex("name"));
-			int orientation = cursor.getInt(cursor
-					.getColumnIndex("orientation"));
+			String name = "no name";
+			int orientation = 0;
+			if (cursor.moveToFirst()) {
+				name = cursor.getString(cursor.getColumnIndex("name"));
+				orientation = cursor.getInt(cursor
+						.getColumnIndex("orientation"));
+			}
 			Log.d(TAG, "Read name from db:" + name + " orientation: "
 					+ orientation);
 
