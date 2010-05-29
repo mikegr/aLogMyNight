@@ -1,54 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="at.madexperts.logmynight"
-      android:versionCode="1"
-      android:versionName="1.0">
-      />
+	package="at.madexperts.logmynight" android:versionCode="1"
+	android:versionName="1.0">
+	/>
 	<uses-feature android:name="android.hardware.camera" />
+
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-	<uses-permission android:name="android.permission.INTERNET"/>
-      
-    <application android:label="@string/app_name">
-        <activity android:name=".CameraActivity"
-				android:configChanges="keyboardHidden|orientation"
-				android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-                android:label="@string/app_name">
-        </activity>
-    
-        <activity android:name=".MainActivity"
-                  android:label="@string/app_name">
-                   <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>    
-        </activity>
-        
-        <activity android:name=".LogActivity"
-                  android:label="@string/app_name">
-        </activity>
-        <activity android:name=".HistoryActivity"
-                  android:label="Rechnung" 
-                  >
-        </activity>
-        <activity android:name=".GalleryActivity"
-                  android:label="Aufrisse">
-                            
-                  
-        </activity>
-         <activity android:name=".BarChartActivity"
-                  android:label="BarChart">  
-                
-        </activity>
-        
-        <!--  Facebook -->
-        <activity android:name="com.codecarpet.fbconnect.FBLoginActivity"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+	<uses-permission android:name="android.permission.INTERNET" />
+
+	<application android:label="@string/app_name">
+
+		<uses-library android:name="com.google.android.maps" />
+
+		<activity android:name=".CameraActivity"
+			android:configChanges="keyboardHidden|orientation" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+			android:label="@string/app_name">
+		</activity>
+
+		<activity android:name=".MainActivity" android:label="@string/app_name">
+
+		</activity>
+
+		<activity android:name=".MapsActivity" android:label="Map">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name=".LogActivity" android:label="@string/app_name">
+		</activity>
+		<activity android:name=".HistoryActivity" android:label="Rechnung">
+		</activity>
+		<activity android:name=".GalleryActivity" android:label="Aufrisse">
+
+
+		</activity>
+		<activity android:name=".BarChartActivity" android:label="BarChart">
+
+		</activity>
+
+		<!--  Facebook -->
+		<activity android:name="com.codecarpet.fbconnect.FBLoginActivity"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 		<activity android:name="com.codecarpet.fbconnect.FBPermissionActivity"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 		<activity android:name="com.codecarpet.fbconnect.FBFeedActivity"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-        
-    </application>
+			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+	</application>
 </manifest> 
