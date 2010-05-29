@@ -231,6 +231,9 @@ public class MainActivity extends ListActivity
     		case R.id.galleryMenuItem:
     			openGallery();
     			return true;
+    		case R.id.locationMenuItem:
+    			openLocations();
+    			return true;
     	}
     	// TODO Auto-generated method stub
     	return super.onOptionsItemSelected(item);
@@ -283,6 +286,11 @@ public class MainActivity extends ListActivity
     
     private void openGallery() {
 		Intent intent = new Intent(this, GalleryActivity.class);
+		startActivity(intent);
+	}
+    
+    private void openLocations() {
+		Intent intent = new Intent(this, MapsActivity.class);
 		startActivity(intent);
 	}
 
