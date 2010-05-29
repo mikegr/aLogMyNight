@@ -28,7 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = DatabaseHelper.class.getName();
 	public DatabaseHelper(Context ctx) {
-		super(ctx, "LogMyNight", null, 9);
+		super(ctx, "LogMyNight", null, 10);
 	}
 	@Override
 	public void onCreate(SQLiteDatabase db) {
@@ -41,6 +41,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	private void addTestdata(SQLiteDatabase db) {
+                db.execSQL("INSERT INTO location (name, longitude, latitude) VALUES ('BOK', 16.369015, 48.195522)");
+                db.execSQL("INSERT INTO location (name, longitude, latitude) VALUES ('Salzbar', 16.3738, 48.21201)");
+                db.execSQL("INSERT INTO location (name, longitude, latitude) VALUES ('Pratersauna', 16.404825, 48.212781)");
+                db.execSQL("INSERT INTO location (name, longitude, latitude) VALUES ('London Club', 16.353793, 48.233063)");
+
 		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('beer_0_5', 1, 300, 5, 500)");
 		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('beer_0_3', 1, 250, 5, 350)");
 		db.execSQL("INSERT INTO drinks (name, category, lastPrice, alcohol, volume) VALUES ('white_wine_0_125', 2, 250, 10, 125)");
