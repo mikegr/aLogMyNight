@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content">
+  <ImageView 
+  	android:id="@+id/buttonBarImage"
+  	android:src="@drawable/icon_bier_small"
+  	android:layout_width="wrap_content"
+  	android:layout_height="wrap_content"
+  	android:layout_gravity="center_vertical"
+  	>
+  </ImageView> 
+  <TextView 
+  	android:id="@+id/buttonBarText"
+  	android:text="LogMyNight"
+  	android:layout_weight="1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+  	>
+  </TextView>
+ 
+  <include 
+  	android:id="@+id/buttonBar1" 
+  	layout="@layout/tab">
+  </include>
+  <include 
+  	android:id="@+id/buttonBar2" 
+  	layout="@layout/tab">
+  </include>
+  
+  <include 
+  	android:id="@+id/buttonBar3"
+  	layout="@layout/tab"
+ 	>
+  </include>
+</LinearLayout>
