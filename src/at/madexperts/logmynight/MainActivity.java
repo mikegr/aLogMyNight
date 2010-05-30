@@ -89,17 +89,18 @@ public class MainActivity extends ListActivity
     
     
     private void setUpButtonBar() {
-	    updateTabView(findViewById(R.id.buttonBar1), "Rechnung", R.drawable.icon_wein_small, HistoryActivity.class);
-	    updateTabView(findViewById(R.id.buttonBar2), "Aufrisse", R.drawable.icon_cocktail_small, GalleryActivity.class);
-	    updateTabView(findViewById(R.id.buttonBar3), "Locations", R.drawable.icon_anti_small, null);
+	    updateTabView(findViewById(R.id.buttonBar1), "Rechnung", R.drawable.check_32, HistoryActivity.class);
+	    updateTabView(findViewById(R.id.buttonBar2), "Aufrisse", R.drawable.people_32, GalleryActivity.class);
+	    updateTabView(findViewById(R.id.buttonBar3), "Locations", R.drawable.icon_anti_small, MapsActivity.class);
 	}
     
 	
     View updateTabView(View tab, String name, int imageId, final Class activity) {
 		ImageView image = (ImageView) tab.findViewById(R.id.tabImage);
 		Drawable d = getResources().getDrawable(imageId);
-		d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+		d.setBounds(0, 0, 32, 32);
 		image.setImageDrawable(d);
+		
 		TextView text = (TextView) tab.findViewById(R.id.tabText);
 		text.setText(name);
 		tab.setOnClickListener(new View.OnClickListener() {
