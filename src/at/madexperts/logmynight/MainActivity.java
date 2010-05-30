@@ -35,6 +35,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -78,13 +79,44 @@ public class MainActivity extends ListActivity
         DatabaseHelper.debug(db, "drinks");
         DatabaseHelper.debug(db, "drinklog");
         
+        setUpButtonBar();
         setUpLocation();
-        
         updateList();
+        
     }
     
     
-    private void setUpLocation() {
+    
+    
+    private void setUpButtonBar() {
+	    updateTabView(findViewById(R.id.buttonBar1), "Rechnung", R.drawable.icon_wein_small, HistoryActivity.class);
+	    updateTabView(findViewById(R.id.buttonBar2), "Aufrisse", R.drawable.icon_cocktail_small, GalleryActivity.class);
+	    updateTabView(findViewById(R.id.buttonBar3), "Locations", R.drawable.icon_anti_small, null);
+	}
+    
+	
+    View updateTabView(View tab, String name, int imageId, final Class activity) {
+		ImageView image = (ImageView) tab.findViewById(R.id.tabImage);
+		Drawable d = getResources().getDrawable(imageId);
+		d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+		image.setImageDrawable(d);
+		TextView text = (TextView) tab.findViewById(R.id.tabText);
+		text.setText(name);
+		tab.setOnClickListener(new View.OnClickListener() {
+			
+			public void onClick(View v) {
+				Intent i = new Intent(MainActivity.this, activity);
+				startActivity(i);
+			}
+		});
+		
+		return tab;
+	}
+
+
+
+
+	private void setUpLocation() {
         auto = (AutoCompleteTextView) findViewById(R.id.mainLocationAutoCompleteTextView);
         auto.setThreshold(0);
         auto.setOnFocusChangeListener(new View.OnFocusChangeListener() {

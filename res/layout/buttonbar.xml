@@ -20,18 +20,18 @@
     android:layout_gravity="center_vertical"
   	>
   </TextView>
-  
+ 
   <include 
   	android:id="@+id/buttonBar1" 
-  	android:layout_toLeftOf="@+id/buttonBar2"
-  	android:layout_height="wrap_content"
-  	android:layout_width="wrap_content"
   	layout="@layout/tab">
   </include>
   <include 
-  	android:id="@+id/buttonBar2"
-  	android:layout_height="wrap_content"
-  	android:layout_width="wrap_content" 
+  	android:id="@+id/buttonBar2" 
+  	layout="@layout/tab">
+  </include>
+  
+  <include 
+  	android:id="@+id/buttonBar3"
   	layout="@layout/tab"
  	>
   </include>

@@ -4,6 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
+<include layout="@layout/buttonbar"></include>
 <LinearLayout 
 	android:id="@+id/LinearLayout01" 
 	android:layout_width="fill_parent" 
@@ -23,7 +24,7 @@
 		android:singleLine="true"
 		>
 	</AutoCompleteTextView>
-</LinearLayout>   
+</LinearLayout>
 <ListView 
 	android:id="@android:id/list" 
 	android:layout_width="fill_parent" 
