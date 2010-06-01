@@ -5,3 +5,12 @@ To query database use
 to set location:
 #telnet localhost 5554
 #geo fix 10 10
+
+
+#Show MD5 of debug key:
+/opt/jdk/bin/keytool -list -keystore ~/.android/debug.keystore
+
+#Info about Maps API_KEY
+Info: http://code.google.com/android/add-ons/google-apis/mapkey.html
+#Get Maps API_KEY here
+http://code.google.com/android/maps-api-signup.html
