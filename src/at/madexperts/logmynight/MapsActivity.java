@@ -2,6 +2,7 @@ package at.madexperts.logmynight;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -26,10 +27,33 @@ public class MapsActivity extends MapActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		/*
 		setContentView(R.layout.map);
-
 		mapView = (MapView) findViewById(R.id.map);
+		*/
+		
+		
+		String apiKey = "";
+		
+        try {
+            Properties p = new Properties();
+            p.load(getResources().getAssets().open("sensitive.properties"));
+            apiKey = p.getProperty("maps.apiKey");
+            Log.d(TAG, "API_KEY:" + apiKey);
+			
+		} catch (Exception e) {
+			Log.d(TAG, "Reading map api key failed", e); 
+		}
+
+		mapView = new MapView(this, apiKey);
+		
+		mapView.setClickable(true);
+		mapView.setEnabled(true);
+		
 		mapView.setBuiltInZoomControls(true);
+		
+		setContentView(mapView);
 		
 		db = new DatabaseHelper(this).getReadableDatabase();
 		
