@@ -1,0 +1,2 @@
+#Rename this file to sensitive.properties and add your Google Maps API key
+maps.apiKey=MAP_API_KEY
