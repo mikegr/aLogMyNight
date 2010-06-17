@@ -42,13 +42,9 @@
 
 		</activity>
 
-		<!--  Facebook -->
-		<activity android:name="com.codecarpet.fbconnect.FBLoginActivity"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-		<activity android:name="com.codecarpet.fbconnect.FBPermissionActivity"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-		<activity android:name="com.codecarpet.fbconnect.FBFeedActivity"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+		<activity android:name=".facebook.FacebookActivity" android:label="Facebook"/>
+
+		
 
 	</application>
 </manifest> 

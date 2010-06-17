@@ -21,14 +21,10 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.codecarpet.fbconnect.FBFeedActivity;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -52,6 +48,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import at.madexperts.logmynight.chart.BarChartView;
 import at.madexperts.logmynight.chart.BarItem;
+import at.madexperts.logmynight.facebook.FacebookActivity;
 
 public class HistoryActivity extends Activity implements OnClickListener,
 		OnItemClickListener {
@@ -146,8 +143,9 @@ public class HistoryActivity extends Activity implements OnClickListener,
 	}
 
 	private void share(String txt) {
-		FacebookHelper h = new FacebookHelper(this);
-		h.publish(txt);
+		Intent intent = new Intent(this, FacebookActivity.class);
+		intent.putExtra("message", txt);
+		startActivity(intent);
 	}
 
 	private Dialog dlg;
